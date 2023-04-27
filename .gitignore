@@ -1,1 +1,3 @@
 .idea
+test-app/node_modules
+package/node_modules

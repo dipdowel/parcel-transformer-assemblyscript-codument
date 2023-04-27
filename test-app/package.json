@@ -1,0 +1,11 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "description": "An app for trying and testing parcel-plugin-assemblyscript-codument",
+  "main": "test-app.js",
+  "author": "dipdowel aka Hoofdkantoor",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}

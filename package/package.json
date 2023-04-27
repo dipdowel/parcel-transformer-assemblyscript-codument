@@ -1,0 +1,10 @@
+{
+  "name": "parcel-plugin-assemblyscript-codument",
+  "version": "0.0.1",
+  "description": "A plugin for Parcel to enable usage of AssemblyScript code in Parcel bundler",
+  "main": "index.js",
+  "repository": "https://github.com/dipdowel/parcel-plugin-assemblyscript-codument",
+  "author": "dipdowel aka Hoofdkantoor",
+  "license": "Apache 2.0",
+  "private": true
+}
