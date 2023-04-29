@@ -1,5 +1,5 @@
 {
-  "name": "parcel-plugin-assemblyscript-codument",
+  "name": "parcel-transformer-assemblyscript-codument",
   "version": "0.1.0",
   "description": "A plugin for Parcel to enable usage of AssemblyScript code in Parcel bundler",
   "license": "Apache 2.0",
@@ -8,17 +8,18 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/dipdowel/parcel-plugin-assemblyscript-codument.git",
+  "repository": "https://github.com/dipdowel/parcel-transformer-assemblyscript-codument.git",
   "dependencies": {
     "@parcel/diagnostic": "^2.0.0",
     "@parcel/plugin": "^2.0.0",
-    "assemblyscript": "^0.27.4"
+    "assemblyscript": "^0.27.4",
+    "wabt": "^1.0.24"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8"
   },
   "engines": {
     "node": ">=12",
     "parcel": "^2.0.0"
-  },
-  "devDependencies": {
-    "prettier": "^2.8.8"
   }
 }
