@@ -1,6 +1,0 @@
-{
-	"extends": "@parcel/config-default",
-	"transformers": {
-		"assembly/*.ts": ["parcel-plugin-assemblyscript-codument"]
-	}
-}
