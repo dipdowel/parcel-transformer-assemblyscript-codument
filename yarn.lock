@@ -759,7 +759,7 @@ argparse@^2.0.1:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-assemblyscript@^0.27.4:
+assemblyscript@^0.27.5:
   version "0.27.5"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.5.tgz#23aad32f3c552d672da29fd63aeb1d39395d0d83"
   integrity sha512-8CPn+SPMrvvDEa6CQylYOd+Vu5ubyrVhWw1Iy9EXyTan7+8jB5R5trspf3jsMUrh3urVRA0YR9c3U84biny1QA==
@@ -994,6 +994,11 @@ escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==
+
+esm@^3.2.25:
+  version "3.2.25"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
 
 fill-range@^7.0.1:
   version "7.0.1"

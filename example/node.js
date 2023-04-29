@@ -1,6 +1,6 @@
 // import wasmString from "bundle-text:./test.wat";
-import wasmString from "./index.as";
-import ddd from "./assembly/index";
+// import wasmString from "./index.as";
+import * as wasmString from "./assembly/index.as.ts";
 
 var wasmBytes = new TextEncoder().encode(wasmString);
 

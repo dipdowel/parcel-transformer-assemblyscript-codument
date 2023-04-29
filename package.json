@@ -3,5 +3,8 @@
   "workspaces": [
     "example",
     "parcel-transformer-assemblyscript-codument"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  }
 }
