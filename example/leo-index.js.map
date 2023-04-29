@@ -1,0 +1,1 @@
+{"mappings":"AACA,QAAQ,GAAG,CAAC","sources":["index.ts"],"sourcesContent":["import {add} from \"./assembly/index.as\";\nconsole.log(\"okay...\")"],"names":[],"version":3,"file":"index.js.map"}
