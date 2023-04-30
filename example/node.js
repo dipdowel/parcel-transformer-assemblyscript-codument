@@ -1,15 +1,18 @@
 // import wasmString from "bundle-text:./test.wat";
 // import wasmString from "./index.as";
-import * as wasmString from "./assembly/index.as.ts";
+import * as wasmBytes from "./assembly/index.as.ts";
 
-var wasmBytes = new TextEncoder().encode(wasmString);
+console.log(`>>> wasmBytes: ${wasmBytes}`);
 
-(async () => {
-	const {
-		instance: {
-			exports: { add },
-		},
-	} = await WebAssembly.instantiate(wasmBytes);
-
-	console.log(add(1, 2));
-})();
+//
+// var wasmBytes = new TextEncoder().encode(wasmString);
+//
+// (async () => {
+// 	const {
+// 		instance: {
+// 			exports: { add },
+// 		},
+// 	} = await WebAssembly.instantiate(wasmBytes);
+//
+// 	console.log(add(1, 2));
+// })();

@@ -2,85 +2,163 @@ require = require("esm")(module);
 const { default: ThrowableDiagnostic, md } = require("@parcel/diagnostic");
 const { fs } = require("fs");
 const { Transformer } = require("@parcel/plugin");
+const { ascIO } = require("./asc-io");
 
-// const asc = require("assemblyscript/dist/asc").default;
-
-// const esmModule = await requireEsm("");
+const { asconfig } = require("./asconfig");
 
 // =====================================================================================================================
-// const wabtPromise = require("wabt");
 const path = require("path");
-const { Buffer } = require("buffer");
-const ERROR_REGEX = /^parseWat failed:\n[^:]*:(\d):(\d)+: (.*)/;
+// const { Buffer } = require("buffer");
+// const ERROR_REGEX = /^parseWat failed:\n[^:]*:(\d):(\d)+: (.*)/;
 
 // =====================================================================================================================
 
-/** AssemblyScript Compiler, accessible for programmatic usage */
+/** AssemblyScript Compiler for programmatic usage */
 let asc;
 
 /**
- *
- * @param asset
- * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: null, jsResult: string, invalidateOnFileCreate: *[]}>}
+ * An enum with all the types of ASC compilation artifacts
+ * @type {{JS: string, D_TS: string, WAT: string, WASM: string, MAP: string}}
  */
-async function something(asset) {
-  // const esmModule = await requireEsm("./wasm-result.mock");
-  //
-  // await (async () => {
-  //   console.log(esmModule.foo());
-  // })();
+const ArtifactFileType = {
+  MAP: ".wasm.map",
+  WAT: ".wat",
+  D_TS: ".d.ts",
+  WASM: ".wasm",
+  JS: ".js",
+};
 
+/**
+ * TODO: Write JSDoc!
+ * @param asset
+ * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
+ */
+async function compileAssemblyScript(asset) {
   const { filePath, inputCode, readFile } = asset;
-  console.log(`>>> smth filePath: ${filePath}`);
-  console.log(`>>> smth inputCode: ${inputCode}`);
-  console.log(`>>> smth readFile: ${readFile}`);
-  const jsResult = "console.log('hi there');";
-
-  // const readData = readFile(path.basename(asset.filePath));
-  // console.log(`>>> -----------------------------------------------------`);
-  // console.log(`>>> readData: ${JSON.stringify(readData)}`);
-  // console.log(`>>> -----------------------------------------------------`);
+  // console.log(`>>> compileAssemblyScript(), filePath: ${filePath}`);
+  // console.log(`>>> compileAssemblyScript(), inputCode: ${inputCode}`);
+  // console.log(`>>> compileAssemblyScript(), readFile: ${readFile}`);
 
   const absolutePath = path.basename(asset.filePath);
 
-  // #####################################################################################################################
+  /**
+   * An enum
+   * @type {{[p: string]: null, stats: null}}
+   */
+  let compilationArtifacts = {
+    [ArtifactFileType.MAP]: null,
+    [ArtifactFileType.WASM]: null,
+    [ArtifactFileType.WAT]: null,
+    [ArtifactFileType.D_TS]: null,
+    [ArtifactFileType.JS]: null,
+    stats: null,
+  };
 
-  // ========= [ make sure `build` directory exists ] ====================================
-  // const directoryPath = "../build/";
-  //
-  // fs.stat(directoryPath, (err, stats) => {
-  //   if (err || !stats.isDirectory()) {
-  //     fs.mkdir(directoryPath, { recursive: true }, (err) => {
-  //       if (err) throw err;
-  //       console.log("Directory created");
-  //     });
-  //   } else {
-  //     console.log("Directory exists");
-  //   }
-  // });
-  // ========= [ / make sure `build` directory exists ] ====================================
-
+  // -------------------------------------------------------------------------------------------------------------------
+  // [AssemblyScript Compiler] starts
   const { error, stdout, stderr, stats } = await asc.main(
     [
       // Command line options
       absolutePath,
       "--outFile",
-      "build/myModule.wasm",
+      "build/add-file-name.wasm", // FIXME: the file name should correspond to the filename from `filePath`
       // "--optimize",
       // "--sourceMap",
-      // "--stats"
+      // "--stats",
     ],
     {
       /// Additional API options
-      // stdout?: ...,
-      // stderr?: ...,
-      // readFile?: ...,
-      // writeFile?: ...,
+      // stdout: io.stdout,
+      // stderr: io.stderr,
+
+      /**
+       * Here we hook into how ASC reads files from the file system,
+       * and instead of giving it access to `fs`, we simulate
+       * reading of two files that the compiler ever wants:
+       *                                                    1. The config file.
+       *                                                    2. The source code to compile.
+       * @param filename
+       * @param baseDir
+       * @return {*|Promise<unknown>}
+       */
+      readFile: (filename, baseDir) => {
+        console.log(`[ASC] [READ] filename: ${filename}`);
+
+        // ASC is asking for a configuration file,
+        // so we return a hardcoded config for now.
+        if (filename.includes(`asconfig.json`)) {
+          // TODO: 1. read actual `asconfig.json` just once and cache it in memory
+          // TODO: 2. return the content of `asconfig.json` from memory
+          // TODO: 3. Think of how it would be possible to detect changes in `asconfig.json` on the fly and reread it then.
+          // return asconfig;
+          return new Promise((resolve) => {
+            resolve(asconfig);
+          });
+        }
+        // If ASC asked for something else than `asconfig.json`,
+        // then we return the AssemblyScript source code that needs to be compiled,
+        // because what else the compiler may want? :P
+        return new Promise((resolve) => {
+          resolve(inputCode);
+        });
+        // return inputCode;
+      },
+
+      /**
+       * Here we hook into how ASC writes files to the file system,
+       * and instead of giving it access to `fs`, we simulate
+       * the writing by just saving the compilation artifacts
+       * into `compiledResult` object
+       * @param {string} filename
+       * @param {Uint8Array} contents
+       * @param {string} baseDir
+       * @return {Promise<unknown>}
+       */
+      writeFile: (filename, contents, baseDir) => {
+        console.log(
+          `[ASC] [WRITE] size: ${contents?.length} \t${baseDir}/${filename}`
+        );
+
+        //  Based on the type of the compilation artifact,
+        //  place the artifact content into a corresponding field of `compiledResult`
+        //  If `switch (true)` looks weird, please
+        //  @See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch#an_alternative_to_if...else_chains
+        switch (true) {
+          case filename.endsWith(ArtifactFileType.MAP):
+            compilationArtifacts[ArtifactFileType.MAP] = contents;
+            break;
+          case filename.endsWith(ArtifactFileType.WAT):
+            compilationArtifacts[ArtifactFileType.WAT] = contents;
+            break;
+          case filename.endsWith(ArtifactFileType.D_TS):
+            compilationArtifacts[ArtifactFileType.D_TS] = contents;
+            break;
+          case filename.endsWith(ArtifactFileType.WASM):
+            compilationArtifacts[ArtifactFileType.WASM] = contents;
+            break;
+          case filename.endsWith(ArtifactFileType.JS):
+            compilationArtifacts[ArtifactFileType.JS] = contents;
+            break;
+          default:
+            console.warn(`>>> unknown file format found`);
+        }
+
+        return new Promise((resolve) => {
+          resolve();
+        });
+
+        // return Promise
+        // void | Promise<void>;),
+      },
       // listFiles?: ...,
-      // reportDiagnostic?: ...,
+      // reportDiagnostic: io.reportDiagnostics,
       // transforms?: ...
     }
   );
+  // [AssemblyScript Compiler] ends
+  // -------------------------------------------------------------------------------------------------------------------
+
+  compilationArtifacts.stats = stats.toString();
 
   if (error) {
     console.log("[ASC] Compilation failed: " + error.message);
@@ -92,10 +170,8 @@ async function something(asset) {
   // #####################################################################################################################
 
   return {
-    jsResult,
-    // wasmResult: WASM_RESULT_MOCK,
-    wasmResult: `add()`,
-    error: null,
+    compiledResult: compilationArtifacts,
+    error,
     invalidateOnFileChange: [],
     invalidateOnFileCreate: [],
     invalidateOnEnvChange: [],
@@ -104,36 +180,30 @@ async function something(asset) {
 
 module.exports = new Transformer({
   async transform({ asset, logger, inputFs }) {
-    console.log(`>>> step 0`);
-
-    // TODO: Please read the Parcel Transformer developer's documentation again
-    // TODO: There was something about not working with files directly but only through Parcel
-    // TODO: Check if that's followed accurately when providing ASC with the compilation entry point file.
-    // TODO:
     // TODO: use `yarn build:node | cat`
 
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
       asc = await import("assemblyscript/dist/asc.js");
-      console.log("[ASC]  AssemblyScript compiler loaded...");
+      console.log("[ASC] AssemblyScript compiler loaded...");
     })();
 
-    console.log(`>>> step 1`);
     let {
-      jsResult,
-      wasmResult,
+      compiledResult,
       error,
       invalidateOnFileChange,
       invalidateOnFileCreate,
       invalidateOnEnvChange,
-    } = await something({
+    } = await compileAssemblyScript({
       filePath: asset.filePath,
       inputCode: await asset.getCode(),
       readFile: (...args) => fs.readFile(...args),
     });
-    console.log(`>>> step 2`);
+
     /*
-        jsResult should be something like
+    // The comments below were added by @mischnic
+    // --------------------------------------------------------------
+        jsResult should be compileAssemblyScript like
         ```js
         const wasmURL = new URL("asc-wasm-module", import.meta.url);
         export async function instantiate(imports = {}) {
@@ -145,7 +215,7 @@ module.exports = new Transformer({
 
         wasmResult should be a binary buffer containing the compiled Wasm
         */
-    console.log(`>>> step 3`);
+
     if (error) {
       throw new ThrowableDiagnostic({
         diagnostic: {
@@ -167,27 +237,38 @@ module.exports = new Transformer({
       });
     }
 
-    console.log(`>>> step 4`);
     for (let file of invalidateOnFileChange) {
       asset.invalidateOnFileChange(file);
     }
-    console.log(`>>> step 5`);
+
     for (let file of invalidateOnFileCreate) {
       asset.invalidateOnFileCreate({ filePath: file });
     }
-    console.log(`>>> step 6`);
+
     for (let envvar of invalidateOnEnvChange) {
       asset.invalidateOnEnvChange(envvar);
     }
 
+    // console.log( `>>> compiledResult[ArtifactFileType.JS]: ${ compiledResult[ArtifactFileType.JS] }`);
+
     asset.type = "js";
-    // asset.setCode(result);
-    asset.setCode(jsResult);
-    console.log(`>>> step 7`);
+    asset.setCode(compiledResult[ArtifactFileType.JS]);
+
+    console.log(
+      `[ASC] WASM resulting size: ${
+        compiledResult?.[ArtifactFileType.WASM]?.length
+      }`
+    );
+    console.log(`[ASC] stats:\n${compiledResult.stats}`);
+
     return [
       asset,
-      // uniqueKey is however the Wasm module was imported on the JS side.
-      { type: "wasm", content: wasmResult, uniqueKey: "asc-wasm-module" },
+      // TODO: uniqueKey needs to be the Wasm module was imported on the JS side.
+      {
+        type: "wasm",
+        content: compiledResult[ArtifactFileType.WASM],
+        uniqueKey: "asc-wasm-module",
+      },
     ];
   },
 });
