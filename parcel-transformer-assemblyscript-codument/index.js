@@ -109,6 +109,8 @@ module.exports = new Transformer({
     // TODO: Please read the Parcel Transformer developer's documentation again
     // TODO: There was something about not working with files directly but only through Parcel
     // TODO: Check if that's followed accurately when providing ASC with the compilation entry point file.
+    // TODO:
+    // TODO: use `yarn build:node | cat`
 
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
