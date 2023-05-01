@@ -32,17 +32,21 @@ export const ascIO = {
     console.log(`[ASC] [READ] filename: ${filename}`);
     // ASC is asking for a configuration file,
     // so we return a hardcoded config for now.
-    if (filename.includes(`asconfig.json`)) {
+    if (filename.endsWith(`asconfig.json`)) {
       return new Promise((resolve) => {
         resolve(configJSON);
       });
     }
-    // If ASC asked for something else than `asconfig.json`,
-    // then we return the AssemblyScript source code that needs to be compiled,
-    // because what else the compiler may want? :P
-    return new Promise((resolve) => {
-      resolve(inputCode);
-    });
+
+    // The entry point into the AssemblyScript world
+    if (filename.endsWith(`index.as.ts`)) {
+      return new Promise((resolve) => {
+        resolve(inputCode);
+      });
+    }
+
+    // The other files need to be read from the FS somehow. We'll see what we can do :)
+    throw new Error("Support for physical FS is not implemented yet!");
   },
 
   /**
