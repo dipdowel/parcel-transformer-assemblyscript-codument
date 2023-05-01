@@ -1,31 +1,40 @@
 require = require("esm")(module);
 const { default: ThrowableDiagnostic, md } = require("@parcel/diagnostic");
-const { fs } = require("fs");
+
+const fs = require("fs");
+
 const { Transformer } = require("@parcel/plugin");
 const { ascIO } = require("./asc-io");
-
 const { asconfig } = require("./asconfig");
-
-// =====================================================================================================================
 const path = require("path");
-// const { Buffer } = require("buffer");
-// const ERROR_REGEX = /^parseWat failed:\n[^:]*:(\d):(\d)+: (.*)/;
 
-// =====================================================================================================================
+const { ArtifactFileType } = require("./artifact-file-type");
 
 /** AssemblyScript Compiler for programmatic usage */
 let asc;
 
 /**
- * An enum with all the types of ASC compilation artifacts
- * @type {{JS: string, D_TS: string, WAT: string, WASM: string, MAP: string}}
+ * AssemblyScript configuration (parsed from a JSON file named `asconfig.json`)
+ * @type {Object}
  */
-const ArtifactFileType = {
-  MAP: ".wasm.map",
-  WAT: ".wat",
-  D_TS: ".d.ts",
-  WASM: ".wasm",
-  JS: ".js",
+let asConfig;
+
+/**
+ *
+ * @type {{detailedMessage: string, filePath: string, start: {line: number, column: number}, end: {line: number, column: number}, message: string}}
+ */
+const defaultError = {
+  message: "n/a",
+  filePath: "n/a",
+  detailedMessage: "n/a",
+  start: {
+    line: -1,
+    column: -1,
+  },
+  end: {
+    line: -1,
+    column: -1,
+  },
 };
 
 /**
@@ -34,15 +43,15 @@ const ArtifactFileType = {
  * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
  */
 async function compileAssemblyScript(asset) {
-  const { filePath, inputCode, readFile } = asset;
+  const { filePath, inputCode /*, readFile */ } = asset;
   // console.log(`>>> compileAssemblyScript(), filePath: ${filePath}`);
   // console.log(`>>> compileAssemblyScript(), inputCode: ${inputCode}`);
   // console.log(`>>> compileAssemblyScript(), readFile: ${readFile}`);
 
-  const absolutePath = path.basename(asset.filePath);
+  const absolutePath = path.basename(filePath);
 
   /**
-   * An enum
+   * A collection of all the compilation artifacts that ASC produces + compilation statistics info
    * @type {{[p: string]: null, stats: null}}
    */
   let compilationArtifacts = {
@@ -51,6 +60,8 @@ async function compileAssemblyScript(asset) {
     [ArtifactFileType.WAT]: null,
     [ArtifactFileType.D_TS]: null,
     [ArtifactFileType.JS]: null,
+
+    /** A printable string with the statistics of the compilation */
     stats: null,
   };
 
@@ -58,16 +69,17 @@ async function compileAssemblyScript(asset) {
   // [AssemblyScript Compiler] starts
   const { error, stdout, stderr, stats } = await asc.main(
     [
-      // Command line options
+      /* Command line options */
       absolutePath,
-      "--outFile",
-      "build/add-file-name.wasm", // FIXME: the file name should correspond to the filename from `filePath`
+      // "--outFile",
+      // "resultingFile.wasm",
+      "--debug", // FIXME: Find out how to enable/disable debug mode depending on the Parcel mode: "development" or "production".
       // "--optimize",
       // "--sourceMap",
       // "--stats",
     ],
     {
-      /// Additional API options
+      /* Additional API options */
       // stdout: io.stdout,
       // stderr: io.stderr,
 
@@ -77,82 +89,18 @@ async function compileAssemblyScript(asset) {
        * reading of two files that the compiler ever wants:
        *                                                    1. The config file.
        *                                                    2. The source code to compile.
-       * @param filename
-       * @param baseDir
-       * @return {*|Promise<unknown>}
+       * FIXME: the documentation might be misleading if `index.as.ts` imports other files. Check-check-check!!!
        */
-      readFile: (filename, baseDir) => {
-        console.log(`[ASC] [READ] filename: ${filename}`);
-
-        // ASC is asking for a configuration file,
-        // so we return a hardcoded config for now.
-        if (filename.includes(`asconfig.json`)) {
-          // TODO: 1. read actual `asconfig.json` just once and cache it in memory
-          // TODO: 2. return the content of `asconfig.json` from memory
-          // TODO: 3. Think of how it would be possible to detect changes in `asconfig.json` on the fly and reread it then.
-          // return asconfig;
-          return new Promise((resolve) => {
-            resolve(asconfig);
-          });
-        }
-        // If ASC asked for something else than `asconfig.json`,
-        // then we return the AssemblyScript source code that needs to be compiled,
-        // because what else the compiler may want? :P
-        return new Promise((resolve) => {
-          resolve(inputCode);
-        });
-        // return inputCode;
-      },
+      readFile: (filename, baseDir) => ascIO.read(inputCode, filename, baseDir),
 
       /**
        * Here we hook into how ASC writes files to the file system,
        * and instead of giving it access to `fs`, we simulate
        * the writing by just saving the compilation artifacts
        * into `compiledResult` object
-       * @param {string} filename
-       * @param {Uint8Array} contents
-       * @param {string} baseDir
-       * @return {Promise<unknown>}
        */
-      writeFile: (filename, contents, baseDir) => {
-        console.log(
-          `[ASC] [WRITE] size: ${contents?.length} \t${baseDir}/${filename}`
-        );
-
-        //  Based on the type of the compilation artifact,
-        //  place the artifact content into a corresponding field of `compiledResult`
-        //  If `switch (true)` looks weird, please
-        //  @See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch#an_alternative_to_if...else_chains
-        switch (true) {
-          case filename.endsWith(ArtifactFileType.MAP):
-            compilationArtifacts[ArtifactFileType.MAP] = contents;
-            break;
-          case filename.endsWith(ArtifactFileType.WAT):
-            compilationArtifacts[ArtifactFileType.WAT] = contents;
-            break;
-          case filename.endsWith(ArtifactFileType.D_TS):
-            compilationArtifacts[ArtifactFileType.D_TS] = contents;
-            break;
-          case filename.endsWith(ArtifactFileType.WASM):
-            compilationArtifacts[ArtifactFileType.WASM] = contents;
-            break;
-          case filename.endsWith(ArtifactFileType.JS):
-            compilationArtifacts[ArtifactFileType.JS] = contents;
-            break;
-          default:
-            console.warn(`>>> unknown file format found`);
-        }
-
-        return new Promise((resolve) => {
-          resolve();
-        });
-
-        // return Promise
-        // void | Promise<void>;),
-      },
-      // listFiles?: ...,
-      // reportDiagnostic: io.reportDiagnostics,
-      // transforms?: ...
+      writeFile: (filename, contents, baseDir) =>
+        ascIO.write(compilationArtifacts, filename, contents, baseDir),
     }
   );
   // [AssemblyScript Compiler] ends
@@ -172,34 +120,67 @@ async function compileAssemblyScript(asset) {
   return {
     compiledResult: compilationArtifacts,
     error,
-    invalidateOnFileChange: [],
-    invalidateOnFileCreate: [],
-    invalidateOnEnvChange: [],
+    invalidateOnFileChange: [], // FIXME: How do I fill in this one?
+    invalidateOnFileCreate: [], // FIXME: How do I fill in this one?
+    invalidateOnEnvChange: [], // FIXME: How do I fill in this one?
   };
 }
 
 module.exports = new Transformer({
-  async transform({ asset, logger, inputFs }) {
+  async transform({ asset, logger, inputFs, options, config }) {
     // TODO: use `yarn build:node | cat`
+
+    // Should there an error occur, it needs to be copied to this `error` variable
+    // In order to be properly reported
+    let error;
+
+    let asConfigPath = `${options.projectRoot}/asconfig.json`;
 
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
+      // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
       asc = await import("assemblyscript/dist/asc.js");
-      console.log("[ASC] AssemblyScript compiler loaded...");
-    })();
-
-    let {
-      compiledResult,
-      error,
-      invalidateOnFileChange,
-      invalidateOnFileCreate,
-      invalidateOnEnvChange,
-    } = await compileAssemblyScript({
-      filePath: asset.filePath,
-      inputCode: await asset.getCode(),
-      readFile: (...args) => fs.readFile(...args),
+      console.log("[ASC] AssemblyScript compiler loaded");
+    })().catch((e) => {
+      error = new Error(`: ${e}`);
+      error = {
+        ...defaultError,
+        message: "Could not find AssemblyScript installation in NODE_MODULES",
+      };
     });
 
+    // Read and store `asconfig.json` from the project root if that hasn't been done yet
+    if (!error && !asConfig) {
+      try {
+        const configJSON = fs.readFileSync(asConfigPath, "utf8");
+        ascIO.init(configJSON);
+        // asConfig = JSON.parse(configJSON);
+        console.log("[ASC] AssemblyScript configuration loaded");
+      } catch (err) {
+        console.log(
+          `[ASC] Error loading AssemblyScript configuration file from ${asConfigPath}`
+        );
+        error = {
+          ...defaultError,
+          message: "Error loading AssemblyScript configuration file",
+          filePath: asConfigPath,
+        };
+      }
+    }
+
+    if (!error) {
+      let {
+        compiledResult,
+
+        invalidateOnFileChange,
+        invalidateOnFileCreate,
+        invalidateOnEnvChange,
+      } = await compileAssemblyScript({
+        filePath: asset.filePath,
+        inputCode: await asset.getCode(),
+        // readFile: (...args) => fs.readFile(...args),
+      });
+    }
     /*
     // The comments below were added by @mischnic
     // --------------------------------------------------------------
