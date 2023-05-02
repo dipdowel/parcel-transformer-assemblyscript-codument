@@ -1,7 +1,10 @@
 // The entry file of your WebAssembly module.
 
 import { myNumber } from "./data";
+import { helper } from "./helper";
 
 export function add(a: i32, b: i32): i32 {
-  return a + b + myNumber;
+  const myArray = helper();
+
+  return a + b + myNumber + myArray[0];
 }
