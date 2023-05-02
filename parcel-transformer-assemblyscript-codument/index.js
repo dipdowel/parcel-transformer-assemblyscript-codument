@@ -155,7 +155,9 @@ module.exports = new Transformer({
         const configJSON = fs.readFileSync(asConfigPath, "utf8");
         ascIO.init(configJSON);
         // asConfig = JSON.parse(configJSON);
-        console.log("[ASC] AssemblyScript configuration loaded");
+        console.log(
+          "[ASC] AssemblyScript configuration loaded // FIXME: `ascIO.read()` should cache the configuration!"
+        );
       } catch (err) {
         console.log(
           `[ASC] Error loading AssemblyScript configuration file from ${asConfigPath}`

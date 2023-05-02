@@ -1,10 +1,14 @@
 const { ArtifactFileType } = require("./artifact-file-type");
+const fs = require("fs");
 
 /**
  * `asconfig.json` read from the user's project root directory
  * @type {JSON}
  */
 let configJSON;
+
+const PREF_READ = `[ASC] 🔬 Read `;
+const PREF_WRITE = `[ASC] 💽 Write `;
 
 /**
  * AssemblyScript Compiler IO emulation.
@@ -20,33 +24,27 @@ export const ascIO = {
   init: (asconfigJSON) => (configJSON = asconfigJSON),
 
   /**
-   * Emulates reading from the file system, that's easy, since the compiler wants to read just 2 files (config and the source code).
-   * FIXME:  The compiler probably won't manage to read AS source files other than `index.as.ts` with this approach!
-   * FIXME:  This must be fixed!
+   *  Reading from the file system,
+   *  NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
    * @param {string} inputCode
    * @param {string} filename
    * @param {string} baseDir
    * @return {Promise<unknown>}
    */
   read: (inputCode, filename, baseDir) => {
-    console.log(`[ASC] [READ] filename: ${filename}`);
-    // ASC is asking for a configuration file,
-    // so we return a hardcoded config for now.
-    if (filename.endsWith(`asconfig.json`)) {
-      return new Promise((resolve) => {
-        resolve(configJSON);
-      });
+    const absolutePath = `${baseDir}/${filename}`;
+    try {
+      const content = fs.readFileSync(absolutePath, "utf8");
+      console.log(
+        `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
+          ` ${content.length} bytes`
+      );
+      return content;
+    } catch (err) {
+      const msg = `${PREF_READ} Error reading ${absolutePath} :: ${err}`;
+      console.error(msg);
+      // throw new Error(msg); // Should I`throw` here or just call `console.error()`?
     }
-
-    // The entry point into the AssemblyScript world
-    if (filename.endsWith(`index.as.ts`)) {
-      return new Promise((resolve) => {
-        resolve(inputCode);
-      });
-    }
-
-    // The other files need to be read from the FS somehow. We'll see what we can do :)
-    throw new Error("Support for physical FS is not implemented yet!");
   },
 
   /**
@@ -61,7 +59,7 @@ export const ascIO = {
     const path = `${baseDir}/${filename}`;
     contents &&
       console.log(
-        `[ASC] [WRITE] ${path} `.padEnd(80, ".") + ` ${contents.length} bytes`
+        `${PREF_WRITE} ${path} `.padEnd(80, ".") + ` ${contents.length} bytes`
       );
 
     //  Based on the type of the compilation artifact,
@@ -85,7 +83,7 @@ export const ascIO = {
         compilationArtifacts[ArtifactFileType.JS] = contents;
         break;
       default:
-        console.warn(`[ASC] [WRITE] Unknown file format: ${filename}`);
+        console.warn(`${PREF_WRITE} Unknown file format: ${filename}`);
     }
 
     // FIXME: Do we want to reject the promise upon an unknown file format?
