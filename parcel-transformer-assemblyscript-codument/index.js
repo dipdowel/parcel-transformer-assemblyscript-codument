@@ -5,19 +5,13 @@ const fs = require("fs");
 
 const { Transformer } = require("@parcel/plugin");
 const { ascIO } = require("./asc-io");
-const { asconfig } = require("./asconfig");
+
 const path = require("path");
 
 const { ArtifactFileType } = require("./artifact-file-type");
 
 /** AssemblyScript Compiler for programmatic usage */
 let asc;
-
-/**
- * AssemblyScript configuration (parsed from a JSON file named `asconfig.json`)
- * @type {Object}
- */
-let asConfig;
 
 /**
  *
@@ -81,7 +75,7 @@ async function compileAssemblyScript(asset) {
     {
       /* Additional API options */
       // stdout: io.stdout,
-      // stderr: io.stderr,
+      // stderr: (e, e2) => console.log(new Error(e + " :: " + e2)),
 
       /**
        * Here we hook into how ASC reads files from the file system,
@@ -89,15 +83,18 @@ async function compileAssemblyScript(asset) {
        * reading of two files that the compiler ever wants:
        *                                                    1. The config file.
        *                                                    2. The source code to compile.
-       * FIXME: the documentation might be misleading if `index.as.ts` imports other files. Check-check-check!!!
+       * FIXME: ~the documentation might be misleading if `index.as.ts` imports other files. Check-check-check!!!~
+       * FIXME: Update this JSDoc!
        */
-      readFile: (filename, baseDir) => ascIO.read(inputCode, filename, baseDir),
+      readFile: (absolutePath, baseDir = "./assembly/") =>
+        ascIO.read(inputCode, absolutePath, baseDir),
 
       /**
        * Here we hook into how ASC writes files to the file system,
        * and instead of giving it access to `fs`, we simulate
        * the writing by just saving the compilation artifacts
        * into `compiledResult` object
+       * FIXME: Update this JSDoc!
        */
       writeFile: (filename, contents, baseDir) =>
         ascIO.write(compilationArtifacts, filename, contents, baseDir),
@@ -120,10 +117,31 @@ async function compileAssemblyScript(asset) {
   return {
     compiledResult: compilationArtifacts,
     error,
-    invalidateOnFileChange: [], // FIXME: How do I fill in this one?
-    invalidateOnFileCreate: [], // FIXME: How do I fill in this one?
+    invalidateOnFileChange: [], // FIXME: Fill in with the filenames ASC tries to read
+    invalidateOnFileCreate: [], // FIXME: Fill in with the filenames created before that ASC sees for the second or a later time (Is it really so?)
     invalidateOnEnvChange: [], // FIXME: How do I fill in this one?
   };
+}
+
+function throwTransformerError(error) {
+  throw new ThrowableDiagnostic({
+    diagnostic: {
+      message: error.message,
+      codeFrames: [
+        {
+          language: "asc",
+          filePath: error.filePath,
+          codeHighlights: [
+            {
+              message: error.detailedMessage,
+              start: { line: error.start.line, column: error.start.column },
+              end: { line: error.end.line, column: error.end.column },
+            },
+          ],
+        },
+      ],
+    },
+  });
 }
 
 module.exports = new Transformer({
@@ -134,55 +152,37 @@ module.exports = new Transformer({
     // In order to be properly reported
     let error;
 
-    let asConfigPath = `${options.projectRoot}/asconfig.json`;
-
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
       // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
       asc = await import("assemblyscript/dist/asc.js");
-      console.log("[ASC] AssemblyScript compiler loaded");
+      console.log("[ASC] 🚀 AssemblyScript compiler loaded");
     })().catch((e) => {
       error = new Error(`: ${e}`);
       error = {
         ...defaultError,
-        message: "Could not find AssemblyScript installation in NODE_MODULES",
+        message:
+          "[ASC] Could not find AssemblyScript installation in NODE_MODULES",
       };
     });
 
-    // Read and store `asconfig.json` from the project root if that hasn't been done yet
-    if (!error && !asConfig) {
-      try {
-        const configJSON = fs.readFileSync(asConfigPath, "utf8");
-        ascIO.init(configJSON);
-        // asConfig = JSON.parse(configJSON);
-        console.log(
-          "[ASC] AssemblyScript configuration loaded // FIXME: `ascIO.read()` should cache the configuration!"
-        );
-      } catch (err) {
-        console.log(
-          `[ASC] Error loading AssemblyScript configuration file from ${asConfigPath}`
-        );
-        error = {
-          ...defaultError,
-          message: "Error loading AssemblyScript configuration file",
-          filePath: asConfigPath,
-        };
-      }
+    if (error) {
+      throwTransformerError(error);
     }
 
-    if (!error) {
-      let {
-        compiledResult,
+    // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
-        invalidateOnFileChange,
-        invalidateOnFileCreate,
-        invalidateOnEnvChange,
-      } = await compileAssemblyScript({
-        filePath: asset.filePath,
-        inputCode: await asset.getCode(),
-        // readFile: (...args) => fs.readFile(...args),
-      });
-    }
+    let {
+      compiledResult,
+      invalidateOnFileChange,
+      invalidateOnFileCreate,
+      invalidateOnEnvChange,
+    } = await compileAssemblyScript({
+      filePath: asset.filePath,
+      inputCode: await asset.getCode(),
+      // readFile: (...args) => fs.readFile(...args),
+    });
+
     /*
     // The comments below were added by @mischnic
     // --------------------------------------------------------------
@@ -200,24 +200,7 @@ module.exports = new Transformer({
         */
 
     if (error) {
-      throw new ThrowableDiagnostic({
-        diagnostic: {
-          message: error.message,
-          codeFrames: [
-            {
-              language: "asc",
-              filePath: error.filePath,
-              codeHighlights: [
-                {
-                  message: error.detailedMessage,
-                  start: { line: error.start.line, column: error.start.column },
-                  end: { line: error.end.line, column: error.end.column },
-                },
-              ],
-            },
-          ],
-        },
-      });
+      throwTransformerError(error);
     }
 
     for (let file of invalidateOnFileChange) {

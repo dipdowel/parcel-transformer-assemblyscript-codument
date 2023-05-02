@@ -1,30 +1,30 @@
 const { ArtifactFileType } = require("./artifact-file-type");
 const fs = require("fs");
 
+// FIXME:
+// FIXME:
+// FIXME:  !!! THIS FILE MUST BE HEAVILY UNIT-TESTED !!!
+// FIXME:
+// FIXME:
+
+const PREF_READ = `[ASC] 📤 Read  `;
+const PREF_WRITE = `[ASC] 💽 Write `;
+
 /**
  * `asconfig.json` read from the user's project root directory
  * @type {JSON}
  */
-let configJSON;
-
-const PREF_READ = `[ASC] 🔬 Read `;
-const PREF_WRITE = `[ASC] 💽 Write `;
+let asconfigCache = null;
 
 /**
- * AssemblyScript Compiler IO emulation.
+ * AssemblyScript Compiler IO hooks.
  * We don't want to let AssemblyScript Compiler interact with the physical filesystem,
  * so we use custom `read()` and `write()` functions to perform all the read/write operations just in  memory
- * @type {{init: (function(JSON): JSON), read: ((function(string, string, string): Promise<*>)|*), write: (function(Object, string, Uint8Array, string): Promise<*>)}}
+ * @type {{read: ((function(string, string, string): Promise<*>)|*), write: (function(*, *, *, *): Promise<*>)}}
  */
 export const ascIO = {
   /**
-   * Provide the ASC configuration file to be returned by `read()` when the AS compiler asks for `asconfig.json`
-   * @param {JSON} asconfigJSON
-   */
-  init: (asconfigJSON) => (configJSON = asconfigJSON),
-
-  /**
-   *  Reading from the file system,
+   *  Reading from the physical file system,
    *  NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
    * @param {string} inputCode
    * @param {string} filename
@@ -32,18 +32,48 @@ export const ascIO = {
    * @return {Promise<unknown>}
    */
   read: (inputCode, filename, baseDir) => {
-    const absolutePath = `${baseDir}/${filename}`;
+    // const absolutePath = `${baseDir}/${filename}`;
+    let absolutePath = `./assembly/${filename}`;
     try {
+      // const isConfigFile = filename.toLowerCase().trim() === `asconfig.json`;
+      const isConfigFile = filename
+        .toLowerCase()
+        .trim()
+        .endsWith(`asconfig.json`);
+
+      if (isConfigFile) {
+        absolutePath = "./asconfig.json";
+      }
+
+      // return cached AssemblyScript config file if requested and previously cached
+      if (isConfigFile && asconfigCache) {
+        console.log(
+          `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
+            ` ${content.length} bytes [CACHED]`
+        );
+        return asconfigCache;
+      }
+
       const content = fs.readFileSync(absolutePath, "utf8");
+
       console.log(
         `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
           ` ${content.length} bytes`
       );
+      if (isConfigFile) {
+        // Cache AssemblyScript config file
+        asconfigCache = content;
+        console.log(
+          `[ASC] 📦 Cached ${absolutePath} `.padEnd(80, ".") +
+            ` ${content.length} bytes`
+        );
+      }
       return content;
+      //
     } catch (err) {
       const msg = `${PREF_READ} Error reading ${absolutePath} :: ${err}`;
       console.error(msg);
-      // throw new Error(msg); // Should I`throw` here or just call `console.error()`?
+      throw new Error(msg); // Should I`throw` here or just call `console.error()`?
     }
   },
 
