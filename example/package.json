@@ -3,12 +3,16 @@
 	"name": "example",
 	"version": "0.0.0",
 	"scripts": {
+		"clean:dist": "rimraf dist/*",
+		"clean:build": "rimraf build/*",
 		"build:node": "parcel build node.js --no-cache",
-		"start:web": "parcel index.html --no-cache"
+		"build:web": "yarn clean:dist && parcel build index.html --no-cache",
+		"start:web": "yarn clean:dist && parcel index.html --no-cache"
 	},
 	"devDependencies": {
 		"@parcel/transformer-inline-string": "^2.0.0",
 		"parcel": "^2.0.0",
-		"parcel-transformer-assemblyscript-codument": "*"
+		"parcel-transformer-assemblyscript-codument": "*",
+		"rimraf": "^5.0.0"
 	}
 }

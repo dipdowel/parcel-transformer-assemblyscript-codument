@@ -215,17 +215,21 @@ module.exports = new Transformer({
       asset.invalidateOnEnvChange(envvar);
     }
 
-    // console.log( `>>> compiledResult[ArtifactFileType.JS]: ${ compiledResult[ArtifactFileType.JS] }`);
-
     asset.type = "js";
     asset.setCode(compiledResult[ArtifactFileType.JS]);
 
     console.log(
-      `[ASC] WASM resulting size: ${
+      `[ASC] compiled WASM module size: ${
         compiledResult?.[ArtifactFileType.WASM]?.length
       }`
     );
     console.log(`[ASC] stats:\n${compiledResult.stats}`);
+
+    //  Print raw WASM module, which is a `Uint8Array` instance
+    // console.log(compiledResult[ArtifactFileType.WASM]);
+
+    // Print the JavaScript compilation artifact
+    // console.log(`[ASC] JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
 
     return [
       asset,
