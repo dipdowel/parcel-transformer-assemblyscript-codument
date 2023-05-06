@@ -1,2 +1,5 @@
-# parcel-transformer-assemblyscript-codument
-A plugin to enable usage of AssemblyScript code in Parcel bundler
+# `./parcel-transformer-assemblyscript-codument`
+TODO: explain what's in that folder
+
+## `./example`
+TODO: explain what's in that folder
