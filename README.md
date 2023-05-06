@@ -1,4 +1,7 @@
 # AssemblyScript transformer for Parcel + an example app
+## Please note!
+The project is at its early stage of development, so it's not stable and even the base branch (`master`) be broken. 
+
 
 ## Quick start
 1. Please execute `yarn` in the same directory where this README is located.
