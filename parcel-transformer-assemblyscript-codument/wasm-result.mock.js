@@ -1,3 +1,8 @@
+/**
+ * As of 7-05-2023, this file is not used.
+ * TODO: Delete this file if not in use after 01-07-2023
+ * @type {string}
+ */
 export const WASM_RESULT_MOCK = `
     ;; hello_world.wat
 
