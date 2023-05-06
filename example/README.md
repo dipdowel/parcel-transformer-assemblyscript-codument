@@ -1,7 +1,6 @@
 # `example`
 
 ## Preface
-TODO: Write one!
+At this stage of development use `yarn build:web |cat` to see the complete logs and stats!
 
 ## TODO: Cover the following:
-1. ...
