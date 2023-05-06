@@ -1,6 +1,6 @@
 # AssemblyScript transformer for Parcel + an example app
 ## Please note!
-The project is at its early stage of development, so it's not stable and even the base branch (`master`) be broken. 
+The project is at its early stage of development, so it's not stable and even the base branch (`master`) might be broken. 
 
 
 ## Quick start
