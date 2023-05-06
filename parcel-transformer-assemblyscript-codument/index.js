@@ -10,11 +10,26 @@ const path = require("path");
 
 const { ArtifactFileType } = require("./artifact-file-type");
 
-/** AssemblyScript Compiler for programmatic usage */
+/*
+    TODO: It's a little faster to prototype in JS,
+    TODO: but it's way easier to maintain a TypeScript project in the long run.
+    TODO:
+    TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    TODO: !!! CONVERT THE TRANSFORMER TO PROPER TypeScript !!!
+    TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+
+/**  An instance of AssemblyScript Compiler for programmatic usage. */
 let asc;
 
 /**
- *
+ * Logging prefix
+ * @type {string}
+ */
+const PREF = "[ASC]";
+
+/**
+ * An error object template. To be cloned, filled with available error details, and passed on to Parcel.
  * @type {{detailedMessage: string, filePath: string, start: {line: number, column: number}, end: {line: number, column: number}, message: string}}
  */
 const defaultError = {
@@ -61,7 +76,14 @@ async function compileAssemblyScript(asset) {
 
   // -------------------------------------------------------------------------------------------------------------------
   // [AssemblyScript Compiler] starts
-  const { error, stdout, stderr, stats } = await asc.main(
+  const {
+    error,
+    stdout,
+    stderr,
+
+    /** @See type `Stats` in https://github.com/AssemblyScript/assemblyscript/blob/main/cli/index.d.ts */
+    stats,
+  } = await asc.main(
     [
       /* Command line options */
       absolutePath,
@@ -79,22 +101,16 @@ async function compileAssemblyScript(asset) {
 
       /**
        * Here we hook into how ASC reads files from the file system,
-       * and instead of giving it access to `fs`, we simulate
-       * reading of two files that the compiler ever wants:
-       *                                                    1. The config file.
-       *                                                    2. The source code to compile.
-       * FIXME: ~the documentation might be misleading if `index.as.ts` imports other files. Check-check-check!!!~
-       * FIXME: Update this JSDoc!
+       * and execute our custom file reading logic
+       * @See `ascIO.read()`
        */
       readFile: (absolutePath, baseDir = "./assembly/") =>
         ascIO.read(inputCode, absolutePath, baseDir),
 
       /**
        * Here we hook into how ASC writes files to the file system,
-       * and instead of giving it access to `fs`, we simulate
-       * the writing by just saving the compilation artifacts
-       * into `compiledResult` object
-       * FIXME: Update this JSDoc!
+       * and execute our custom logic of writing to a file.
+       * @See `ascIO.write()`
        */
       writeFile: (filename, contents, baseDir) =>
         ascIO.write(compilationArtifacts, filename, contents, baseDir),
@@ -103,10 +119,11 @@ async function compileAssemblyScript(asset) {
   // [AssemblyScript Compiler] ends
   // -------------------------------------------------------------------------------------------------------------------
 
+  // Store the log-friendly string representation of the compilation statistics
   compilationArtifacts.stats = stats.toString();
 
   if (error) {
-    console.log("[ASC] Compilation failed: " + error.message);
+    console.log(`${PREF} Compilation failed: ${error.message}`);
     console.log(stderr.toString());
   } else {
     console.log(stdout.toString());
@@ -146,23 +163,24 @@ function throwTransformerError(error) {
 
 module.exports = new Transformer({
   async transform({ asset, logger, inputFs, options, config }) {
-    // TODO: use `yarn build:node | cat`
+    // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
 
-    // Should there an error occur, it needs to be copied to this `error` variable
-    // In order to be properly reported
+    // TODO: Come up with the way of passing the ASC logging to Parcel properly, so that Parcel would print the logs
+    // TODO: of this transformer properly.
+
+    // NB: Should an error occur, it needs to be copied to this `error` variable in order to be properly reported.
     let error;
 
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
       // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
       asc = await import("assemblyscript/dist/asc.js");
-      console.log("[ASC] 🚀 AssemblyScript compiler loaded");
+      console.log(`${PREF} 🚀 AssemblyScript compiler loaded`);
     })().catch((e) => {
       error = new Error(`: ${e}`);
       error = {
         ...defaultError,
-        message:
-          "[ASC] Could not find AssemblyScript installation in NODE_MODULES",
+        message: `${PREF} Could not find AssemblyScript installation in NODE_MODULES`,
       };
     });
 
@@ -219,17 +237,17 @@ module.exports = new Transformer({
     asset.setCode(compiledResult[ArtifactFileType.JS]);
 
     console.log(
-      `[ASC] compiled WASM module size: ${
+      `${PREF} Compiled WASM module size: ${
         compiledResult?.[ArtifactFileType.WASM]?.length
       }`
     );
-    console.log(`[ASC] stats:\n${compiledResult.stats}`);
+    console.log(`${PREF} Stats:\n${compiledResult.stats}`);
 
     //  Print raw WASM module, which is a `Uint8Array` instance
     // console.log(compiledResult[ArtifactFileType.WASM]);
 
     // Print the JavaScript compilation artifact
-    // console.log(`[ASC] JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
+    // console.log(`${PREF} JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
 
     return [
       asset,
@@ -237,7 +255,11 @@ module.exports = new Transformer({
       {
         type: "wasm",
         content: compiledResult[ArtifactFileType.WASM],
-        uniqueKey: "asc-wasm-module",
+        // uniqueKey: "asc-wasm-module",        // FIXME: neither of the hardcoded options worked :/
+        // uniqueKey: "./assembly/index.as.ts", // FIXME: neither of the hardcoded options worked :/
+        // uniqueKey: "./build/release.wasm",   // FIXME: neither of the hardcoded options worked :/
+        uniqueKey: "release.wasm", //              FIXME: neither of the hardcoded options worked :/
+        // uniqueKey: "index.as.ts",            // FIXME: neither of the hardcoded options worked :/
       },
     ];
   },

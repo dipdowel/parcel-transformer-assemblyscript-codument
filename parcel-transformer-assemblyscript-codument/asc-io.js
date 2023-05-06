@@ -1,13 +1,20 @@
 const { ArtifactFileType } = require("./artifact-file-type");
 const fs = require("fs");
 
-// FIXME:
-// FIXME:
-// FIXME:  !!! THIS FILE MUST BE HEAVILY UNIT-TESTED !!!
-// FIXME:
-// FIXME:
+// TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// TODO:  !!! THIS FILE MUST BE HEAVILY UNIT-TESTED !!!
+// TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+/**
+ * Prefix for logging the reading of files from the FS
+ * @type {string}
+ */
 const PREF_READ = `[ASC] 📤 Read  `;
+
+/**
+ * Prefix for logging the writing of files to the FS
+ * @type {string}
+ */
 const PREF_WRITE = `[ASC] 💽 Write `;
 
 /**
@@ -24,6 +31,7 @@ let asconfigCache = null;
  */
 export const ascIO = {
   /**
+   * Overrides the ASC functionality of reading from the file system.
    *  Reading from the physical file system,
    *  NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
    * @param {string} inputCode
@@ -45,7 +53,7 @@ export const ascIO = {
         absolutePath = "./asconfig.json";
       }
 
-      // return cached AssemblyScript config file if requested and previously cached
+      // return cached AssemblyScript config file if requested *and* previously cached
       if (isConfigFile && asconfigCache) {
         console.log(
           `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
@@ -75,14 +83,20 @@ export const ascIO = {
       console.error(msg);
       throw new Error(msg); // Should I`throw` here or just call `console.error()`?
     }
+    // FIXME: Do we want this function to be async after all?
+    // return new Promise((resolve) => {
+    //   resolve();
+    //   reject();
+    // });
   },
 
   /**
-   * Writes a compilation artifact file into an object in memory, to be used by Parcel.
-   * @param compilationArtifacts
-   * @param filename
-   * @param contents
-   * @param baseDir
+   * Overrides the ASC functionality of writing to the file system.
+   * Writes a compilation artifact file into an object in memory, to be passed to Parcel.
+   * @param {{[p: string]: null, stats: null}} compilationArtifacts -- the result of the compilation gets written to this object
+   * @param {string} filename
+   * @param {any} contents
+   * @param {string} baseDir
    * @return {Promise<*>}
    */
   write: (compilationArtifacts, filename, contents, baseDir) => {
@@ -116,6 +130,7 @@ export const ascIO = {
         console.warn(`${PREF_WRITE} Unknown file format: ${filename}`);
     }
 
+    // FIXME: Do we want this function to be async after all?
     // FIXME: Do we want to reject the promise upon an unknown file format?
     return new Promise((resolve) => {
       resolve();
