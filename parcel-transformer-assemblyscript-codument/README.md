@@ -1,5 +1,5 @@
 
-# parcel-transformer-assemblyscript-codument
+# `parcel-transformer-assemblyscript-codument`
 
 ## Preface
 The idea behind this transformer is to integrate development of WASM-modules in AssemblyScript
