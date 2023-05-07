@@ -33,8 +33,8 @@ let asconfigCache = null;
 export const ascIO = {
   /**
    * Overrides the ASC functionality of reading from the file system.
-   *  Reading from the physical file system,
-   *  NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
+   * - NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
+   * - Adds some logging for the read operations.
    * @param {string} inputCode
    * @param {string} filename
    * @param {string} baseDir
