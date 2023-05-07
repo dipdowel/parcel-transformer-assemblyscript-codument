@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "strict": true,
+    "noEmitHelpers": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "lib": ["DOM", "DOM.Iterable", "esnext"],
+    "types": []
+    //    "baseUrl": ".",
+    //    "paths": {
+    //      "@common/*": ["../common/*"]
+    //    }
+  },
+
+//  "include": ["./src/**/*"]
+}
