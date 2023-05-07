@@ -163,6 +163,8 @@ function throwTransformerError(error) {
 
 module.exports = new Transformer({
   async transform({ asset, logger, inputFs, options, config }) {
+    // TODO: try using `logger` in order to report ASC logging to the screen.
+
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
 
     // TODO: Come up with the way of passing the ASC logging to Parcel properly, so that Parcel would print the logs
