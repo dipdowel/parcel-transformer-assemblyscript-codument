@@ -25,8 +25,9 @@ let asconfigCache = null;
 
 /**
  * AssemblyScript Compiler IO hooks.
- * We don't want to let AssemblyScript Compiler interact with the physical filesystem,
- * so we use custom `read()` and `write()` functions to perform all the read/write operations just in  memory
+ * We don't want to let AssemblyScript Compiler interact with the filesystem on its own,
+ * so we use custom `read()` and `write()` functions to hook into all the read/write operations
+ * and customise them.
  * @type {{read: ((function(string, string, string): Promise<*>)|*), write: (function(*, *, *, *): Promise<*>)}}
  */
 export const ascIO = {
