@@ -276,26 +276,28 @@ module.exports = new Transformer({
 
     // const content = fs.readFileSync(absolutePath, "utf8");
 
-    /*
     // Write types for the WASM module to the disk
     try {
       fs.writeFileSync(
-        `./assembly/../glue.d.ts`,
-        compiledResult?.[ArtifactFileType.D_TS]
+        `./assembly/../WasmModule.d.ts`,
+        compiledResult?.[ArtifactFileType.D_TS] +
+          "\n\n" +
+          `/** Shape of the WASM module compiled from AssemblyScript */\n` +
+          `export type WasmModule = typeof __AdaptedExports;`
       );
       console.log(`${PREF} '.d.ts' file written successfully!`);
     } catch (error) {
       console.error(`${PREF} Error writing to file: ${error}`);
     }
-
-    // Write the generated JS glue for the WASM module to the disk
-    try {
-      fs.writeFileSync(`./assembly/../glue.js`, jsCode);
-      console.log(`${PREF} 'assembly.js' file written successfully!`);
-    } catch (error) {
-      console.error(`${PREF} Error writing to file glue.js: ${error}`);
-    }
-*/
+    /*
+        // Write the generated JS glue for the WASM module to the disk
+        try {
+          fs.writeFileSync(`./assembly/../glue.js`, jsCode);
+          console.log(`${PREF} 'assembly.js' file written successfully!`);
+        } catch (error) {
+          console.error(`${PREF} Error writing to file glue.js: ${error}`);
+        }
+    */
     return [
       asset,
       // TODO: uniqueKey needs to be the Wasm module was imported on the JS side.
