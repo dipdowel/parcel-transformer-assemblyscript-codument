@@ -5,6 +5,7 @@ const path = require("path");
 
 const { default: ThrowableDiagnostic, md } = require("@parcel/diagnostic");
 const { Transformer } = require("@parcel/plugin");
+const { default: SourceMap } = require("@parcel/source-map");
 
 const { ArtifactFileType } = require("./artifact-file-type");
 const { ascIO } = require("./helpers/asc-io");
@@ -93,6 +94,7 @@ async function compileAssemblyScript(asset) {
       "--debug", // FIXME: enable/disable debug mode depending on the Parcel mode: "development" or "production".
       // "--optimize",
       // "--sourceMap",
+      // "/output.wasm.map",
       // "--stats",
     ],
     {
@@ -222,7 +224,35 @@ module.exports = new Transformer({
 
     // const content = fs.readFileSync(absolutePath, "utf8");
 
+    // A `.d.ts` file with all the signatures of callable function and accessible properties of the WASM module
     writeDeclarationFile(compiledResult?.[ArtifactFileType.D_TS]);
+
+    // Print the MAP compilation artifact
+    // console.log(`${PREF} MAP :\n\n${compiledResult[ArtifactFileType.MAP]}\n\n\n`);
+
+    // fs.writeFileSync("maps.lala.ts", compiledResult[ArtifactFileType.MAP]);
+
+    const sourceMap = new SourceMap();
+    // sourceMap.addVLQMap(compiledResult[ArtifactFileType.MAP]);
+
+    /*
+    sourceMap.setSourceContent(
+      "output.wasm.map",
+      // "index.as.ts",
+      // "index.as",
+      // "index",
+      compiledResult[ArtifactFileType.MAP]
+    );
+
+    sourceMap.addEmptyMap(
+      // "output.wasm.map",
+      // "index.as",
+      "index.as.ts",
+      compiledResult[ArtifactFileType.MAP]
+    );
+  */
+
+    // asset.setMap(sourceMap);
 
     return [
       asset,
@@ -230,6 +260,10 @@ module.exports = new Transformer({
         type: "wasm",
         content: compiledResult[ArtifactFileType.WASM],
         uniqueKey: "output.wasm",
+        // map: compiledResult[ArtifactFileType.MAP],
+        // setMap(arg0) {
+        //   return compiledResult[ArtifactFileType.MAP];
+        // },
       },
     ];
   },

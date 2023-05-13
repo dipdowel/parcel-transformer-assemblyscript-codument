@@ -3,7 +3,8 @@ import fs from "fs";
 const PREF = "[ASC][WDF]";
 
 /**
- * Write types for the WASM module to the disk
+ * Write types for the WASM module to the disk.
+ * The `.d.ts` file should contain all the signatures of callable function and accessible properties of the WASM module.
  * @param content
  */
 export function writeDeclarationFile(content) {
