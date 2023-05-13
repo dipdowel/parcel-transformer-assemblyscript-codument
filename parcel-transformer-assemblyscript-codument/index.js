@@ -87,9 +87,9 @@ async function compileAssemblyScript(asset) {
     [
       /* Command line options */
       absolutePath,
-      // "--outFile",
-      // "resultingFile.wasm",
-      "--debug", // FIXME: Find out how to enable/disable debug mode depending on the Parcel mode: "development" or "production".
+      "--outFile",
+      "output.wasm", // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
+      "--debug", // FIXME: enable/disable debug mode depending on the Parcel mode: "development" or "production".
       // "--optimize",
       // "--sourceMap",
       // "--stats",
@@ -203,7 +203,6 @@ module.exports = new Transformer({
     } = await compileAssemblyScript({
       filePath: asset.filePath,
       inputCode: await asset.getCode(),
-      // readFile: (...args) => fs.readFile(...args),
     });
 
     /*
@@ -239,7 +238,26 @@ module.exports = new Transformer({
     }
 
     asset.type = "js";
-    asset.setCode(compiledResult[ArtifactFileType.JS]);
+    const jsCode =
+      compiledResult[ArtifactFileType.JS] +
+      `let instance = null;
+      export async function init() {
+        if (instance == null) {
+          let url = new URL("output.wasm", import.meta.url);
+          instance = await instantiate(
+            await ${
+              //asset.env.isNode
+              // ? `WebAssembly.compile(await (await import("node:fs/promises")).readFile(url))`
+              //: `WebAssembly.compileStreaming(fetch(url))`
+              `WebAssembly.compileStreaming(fetch(url))`
+            },
+            {}
+          );
+        }
+        return instance;
+      }`;
+
+    asset.setCode(jsCode);
 
     console.log(
       `${PREF} Compiled WASM module size: ${
@@ -254,17 +272,35 @@ module.exports = new Transformer({
     // Print the JavaScript compilation artifact
     // console.log(`${PREF} JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
 
+    // const content = fs.readFileSync(absolutePath, "utf8");
+
+    /*
+    // Write types for the WASM module to the disk
+    try {
+      fs.writeFileSync(
+        `./assembly/../glue.d.ts`,
+        compiledResult?.[ArtifactFileType.D_TS]
+      );
+      console.log(`${PREF} '.d.ts' file written successfully!`);
+    } catch (error) {
+      console.error(`${PREF} Error writing to file: ${error}`);
+    }
+
+    // Write the generated JS glue for the WASM module to the disk
+    try {
+      fs.writeFileSync(`./assembly/../glue.js`, jsCode);
+      console.log(`${PREF} 'assembly.js' file written successfully!`);
+    } catch (error) {
+      console.error(`${PREF} Error writing to file glue.js: ${error}`);
+    }
+*/
     return [
       asset,
       // TODO: uniqueKey needs to be the Wasm module was imported on the JS side.
       {
         type: "wasm",
         content: compiledResult[ArtifactFileType.WASM],
-        // uniqueKey: "asc-wasm-module",        // FIXME: neither of the hardcoded options worked :/
-        // uniqueKey: "./assembly/index.as.ts", // FIXME: neither of the hardcoded options worked :/
-        // uniqueKey: "./build/release.wasm",   // FIXME: neither of the hardcoded options worked :/
-        uniqueKey: "release.wasm", //              FIXME: neither of the hardcoded options worked :/
-        // uniqueKey: "index.as.ts",            // FIXME: neither of the hardcoded options worked :/
+        uniqueKey: "output.wasm",
       },
     ];
   },
