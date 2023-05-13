@@ -8,6 +8,6 @@ export function add(a: i32, b: i32): i32 {
 
   console.log("[WASM] Hi there!");
   console.log("[WASM] myNumber: " + myNumber.toString(10));
-  console.log("[WASM] myArray[0]: " + myArray.toString());
+  console.log("[WASM] myArray: " + myArray.toString());
   return a + b;
 }
