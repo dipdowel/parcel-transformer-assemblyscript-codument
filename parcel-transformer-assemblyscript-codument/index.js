@@ -235,6 +235,30 @@ module.exports = new Transformer({
     const sourceMap = new SourceMap();
     // sourceMap.addVLQMap(compiledResult[ArtifactFileType.MAP]);
 
+    const ascMap = compiledResult[ArtifactFileType.MAP];
+
+    // console.log(`>>> eval maps : ${JSON.stringify(maps)}`);
+
+    /*
+    sourceMap.addVLQMap({
+      file: "output.wasm.map",
+      names: ascMap.names,
+      sources: ascMap.sources,
+      sourceRoot: "./",
+      mappings: ascMap.mappings,
+      sourcesContent: ascMap.sourcesContent,
+      version: ascMap.version,
+    });
+*/
+
+    /*
+
+    sourceMap.addVLQMap({
+      ...compiledResult[ArtifactFileType.MAP],
+      file: "output.wasm.map",
+    });
+*/
+
     /*
     sourceMap.setSourceContent(
       "output.wasm.map",
