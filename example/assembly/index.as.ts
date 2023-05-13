@@ -1,7 +1,7 @@
 // The entry file of your WebAssembly module.
 
 import { myNumber } from "./data";
-import { helper } from "./helper";
+import { helper } from "./package1/sub-package-1/helper";
 
 /**
  * This is a simple addition of two i32 values

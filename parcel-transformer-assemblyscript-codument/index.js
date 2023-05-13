@@ -216,6 +216,16 @@ module.exports = new Transformer({
         compiledResult?.[ArtifactFileType.WASM]?.length
       }`
     );
+
+    // FIXME: Figure out how to override the name of the Transformer at the output
+    logger.info({
+      origin: "[ASC]",
+      name: "n/a",
+      message: `# Compiled WASM module size: ${
+        compiledResult?.[ArtifactFileType.WASM]?.length
+      }`,
+    });
+
     console.log(`${PREF} Stats:\n${compiledResult.stats}`);
 
     //  Print raw WASM module, which is a `Uint8Array` instance
@@ -236,7 +246,7 @@ module.exports = new Transformer({
 
     const ascMap = JSON.parse(compiledResult[ArtifactFileType.MAP]);
 
-    let wasmSourceMap = new SourceMap(options.projectRoot);
+    const wasmSourceMap = new SourceMap(options.projectRoot);
     wasmSourceMap.addVLQMap(ascMap);
 
     return [

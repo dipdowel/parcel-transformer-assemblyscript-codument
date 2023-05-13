@@ -17,6 +17,8 @@ const PREF_READ = `[ASC] 📤 Read  `;
  */
 const PREF_WRITE = `[ASC] 💽 Write `;
 
+const DOT_PADDING = 100;
+
 /**
  * `asconfig.json` read from the user's project root directory
  * @type {JSON}
@@ -57,7 +59,7 @@ export const ascIO = {
       // return cached AssemblyScript config file if requested *and* previously cached
       if (isConfigFile && asconfigCache) {
         console.log(
-          `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
+          `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
             ` ${content.length} bytes [CACHED]`
         );
         return asconfigCache;
@@ -66,14 +68,14 @@ export const ascIO = {
       const content = fs.readFileSync(absolutePath, "utf8");
 
       console.log(
-        `${PREF_READ} ${absolutePath} `.padEnd(80, ".") +
+        `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
           ` ${content.length} bytes`
       );
       if (isConfigFile) {
         // Cache AssemblyScript config file
         asconfigCache = content;
         console.log(
-          `[ASC] 📦 Cached ${absolutePath} `.padEnd(80, ".") +
+          `[ASC] 📦 Cached ${absolutePath} `.padEnd(DOT_PADDING, ".") +
             ` ${content.length} bytes`
         );
       }
@@ -104,7 +106,8 @@ export const ascIO = {
     const path = `${baseDir}/${filename}`;
     contents &&
       console.log(
-        `${PREF_WRITE} ${path} `.padEnd(80, ".") + ` ${contents.length} bytes`
+        `${PREF_WRITE} ${path} `.padEnd(DOT_PADDING, ".") +
+          ` ${contents.length} bytes`
       );
 
     //  Based on the type of the compilation artifact,
