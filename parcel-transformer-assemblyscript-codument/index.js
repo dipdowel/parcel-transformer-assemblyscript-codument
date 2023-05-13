@@ -1,3 +1,4 @@
+"use strict";
 require = require("esm")(module);
 
 const fs = require("fs");
@@ -208,6 +209,7 @@ module.exports = new Transformer({
 
     asset.type = "js";
     asset.setCode(jsCode);
+    asset.setMap(new SourceMap(options.projectRoot));
 
     console.log(
       `${PREF} Compiled WASM module size: ${
@@ -232,49 +234,10 @@ module.exports = new Transformer({
 
     // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 
-    const sourceMap = new SourceMap();
-    // sourceMap.addVLQMap(compiledResult[ArtifactFileType.MAP]);
+    const ascMap = JSON.parse(compiledResult[ArtifactFileType.MAP]);
 
-    const ascMap = compiledResult[ArtifactFileType.MAP];
-
-    /*
-    sourceMap.addVLQMap({
-      file: "output.wasm.map",
-      names: ascMap.names,
-      sources: ascMap.sources,
-      sourceRoot: "./",
-      mappings: ascMap.mappings,
-      sourcesContent: ascMap.sourcesContent,
-      version: ascMap.version,
-    });
-*/
-
-    /*
-
-    sourceMap.addVLQMap({
-      ...compiledResult[ArtifactFileType.MAP],
-      file: "output.wasm.map",
-    });
-*/
-
-    /*
-    sourceMap.setSourceContent(
-      "output.wasm.map",
-      // "index.as.ts",
-      // "index.as",
-      // "index",
-      compiledResult[ArtifactFileType.MAP]
-    );
-
-    sourceMap.addEmptyMap(
-      // "output.wasm.map",
-      // "index.as",
-      "index.as.ts",
-      compiledResult[ArtifactFileType.MAP]
-    );
-  */
-
-    // asset.setMap(sourceMap);
+    let wasmSourceMap = new SourceMap(options.projectRoot);
+    wasmSourceMap.addVLQMap(ascMap);
 
     return [
       asset,
@@ -282,10 +245,7 @@ module.exports = new Transformer({
         type: "wasm",
         content: compiledResult[ArtifactFileType.WASM],
         uniqueKey: "output.wasm",
-        // map: compiledResult[ArtifactFileType.MAP],
-        // setMap(arg0) {
-        //   return compiledResult[ArtifactFileType.MAP];
-        // },
+        map: wasmSourceMap,
       },
     ];
   },
