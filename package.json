@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "example",
+    "parcel-packager-wasm",
     "parcel-transformer-assemblyscript-codument"
   ],
   "devDependencies": {

@@ -2,6 +2,9 @@
 	"extends": "@parcel/config-default",
 	"transformers": {
         "*.as.ts": ["parcel-transformer-assemblyscript-codument"],
-         "*.wasm": ["@parcel/transformer-raw"]
+        "*.wasm": ["@parcel/transformer-raw"]
+	},
+	"packagers": {
+		"*.wasm": "parcel-packager-wasm"
 	}
 }

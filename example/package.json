@@ -12,6 +12,7 @@
 	"devDependencies": {
 		"@parcel/transformer-inline-string": "^2.0.0",
 		"parcel": "^2.0.0",
+		"parcel-packager-wasm": "*",
 		"parcel-transformer-assemblyscript-codument": "*",
 		"rimraf": "^5.0.0"
 	}
