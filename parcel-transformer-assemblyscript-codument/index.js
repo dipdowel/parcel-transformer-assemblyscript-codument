@@ -237,11 +237,13 @@ module.exports = new Transformer({
       asset.invalidateOnEnvChange(envvar);
     }
 
+    console.log(`>>> asset.env.isNode: ${JSON.stringify(asset.env.isNode)}`);
+
     asset.type = "js";
     const jsCode =
       compiledResult[ArtifactFileType.JS] +
       `let instance = null;
-      export async function init() {
+      export async function initWasm() {
         if (instance == null) {
           let url = new URL("output.wasm", import.meta.url);
           instance = await instantiate(

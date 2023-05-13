@@ -1,10 +1,10 @@
 //FIXME: come up with a fix for the `@ts-ignore` below!
 // @ts-ignore
-import { init } from "./assembly/index.as";
+import { initWasm } from "./assembly/index.as";
 
 (async () => {
   try {
-    const wasm = await init();
+    const wasm = await initWasm();
     const addResult = wasm.add(11, 22);
     console.log(`addResult: ${addResult}`);
   } catch (error) {
