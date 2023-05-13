@@ -11,7 +11,7 @@ import { WasmModule } from "./WasmModule";
       `wasm memory size: ${wasm.memory.buffer.byteLength / 1024} KiB`
     );
 
-    const addResult = wasm.add(11, 22);
+    const addResult = wasm.add(4, 6);
     console.log(`addResult: ${addResult}`);
   } catch (error) {
     console.error("An error occurred:", error);

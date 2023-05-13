@@ -1,15 +1,16 @@
 require = require("esm")(module);
-const { default: ThrowableDiagnostic, md } = require("@parcel/diagnostic");
 
 const fs = require("fs");
-
-const { Transformer } = require("@parcel/plugin");
-const { ascIO } = require("./asc-io");
-
 const path = require("path");
 
-const { ArtifactFileType } = require("./artifact-file-type");
+const { default: ThrowableDiagnostic, md } = require("@parcel/diagnostic");
+const { Transformer } = require("@parcel/plugin");
 
+const { ArtifactFileType } = require("./artifact-file-type");
+const { ascIO } = require("./helpers/asc-io");
+const { extendJsCode } = require("./helpers/extend-js-code");
+const { writeDeclarationFile } = require("./helpers/write-declaration-file");
+const { throwTransformerError } = require("./helpers/throw-transformer-error");
 /*
     TODO: It's a little faster to prototype in JS,
     TODO: but it's way easier to maintain a TypeScript project in the long run.
@@ -34,7 +35,7 @@ const PREF = "[ASC]";
  */
 const defaultError = {
   message: "n/a",
-  filePath: "n/a",
+  filePath: __filename,
   detailedMessage: "n/a",
   start: {
     line: -1,
@@ -123,8 +124,8 @@ async function compileAssemblyScript(asset) {
   compilationArtifacts.stats = stats.toString();
 
   if (error) {
-    console.log(`${PREF} Compilation failed: ${error.message}`);
-    console.log(stderr.toString());
+    console.error(`${PREF} Compilation failed: ${error.message}`);
+    console.error(stderr.toString());
   } else {
     console.log(stdout.toString());
   }
@@ -140,27 +141,6 @@ async function compileAssemblyScript(asset) {
   };
 }
 
-function throwTransformerError(error) {
-  throw new ThrowableDiagnostic({
-    diagnostic: {
-      message: error.message,
-      codeFrames: [
-        {
-          language: "asc",
-          filePath: error.filePath,
-          codeHighlights: [
-            {
-              message: error.detailedMessage,
-              start: { line: error.start.line, column: error.start.column },
-              end: { line: error.end.line, column: error.end.column },
-            },
-          ],
-        },
-      ],
-    },
-  });
-}
-
 module.exports = new Transformer({
   async transform({ asset, logger, inputFs, options, config }) {
     //
@@ -173,57 +153,40 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
-    // NB: Should an error occur, it needs to be copied to this `error` variable in order to be properly reported.
-    let error;
-
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
       // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
       asc = await import("assemblyscript/dist/asc.js");
       console.log(`${PREF} 🚀 AssemblyScript compiler loaded`);
     })().catch((e) => {
-      error = new Error(`: ${e}`);
-      error = {
+      throwTransformerError({
         ...defaultError,
-        message: `${PREF} Could not find AssemblyScript installation in NODE_MODULES`,
-      };
+        message: `${PREF} Could not find AssemblyScript installation in NODE_MODULES: ${e}`,
+      });
     });
-
-    if (error) {
-      throwTransformerError(error);
-    }
 
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
-    let {
+    let compilationResult;
+
+    try {
+      compilationResult = await compileAssemblyScript({
+        filePath: asset.filePath,
+        inputCode: await asset.getCode(),
+      });
+    } catch (e) {
+      throwTransformerError({
+        ...defaultError,
+        message: `${PREF} Could not compile Assembly Script: ${e}`,
+      });
+    }
+
+    const {
       compiledResult,
       invalidateOnFileChange,
       invalidateOnFileCreate,
       invalidateOnEnvChange,
-    } = await compileAssemblyScript({
-      filePath: asset.filePath,
-      inputCode: await asset.getCode(),
-    });
-
-    /*
-    // The comments below were added by @mischnic
-    // --------------------------------------------------------------
-        jsResult should be compileAssemblyScript like
-        ```js
-        const wasmURL = new URL("asc-wasm-module", import.meta.url);
-        export async function instantiate(imports = {}) {
-          const { exports } = await WebAssembly.instantiateStreaming(fetch(wasmURL), imports);
-          // AssemblyScript probably has more code in here for bindings
-          return exports;
-        }
-        ```
-
-        wasmResult should be a binary buffer containing the compiled Wasm
-        */
-
-    if (error) {
-      throwTransformerError(error);
-    }
+    } = compilationResult;
 
     for (let file of invalidateOnFileChange) {
       asset.invalidateOnFileChange(file);
@@ -237,28 +200,11 @@ module.exports = new Transformer({
       asset.invalidateOnEnvChange(envvar);
     }
 
-    console.log(`>>> asset.env.isNode: ${JSON.stringify(asset.env.isNode)}`);
+    const isNode = asset.env.isNode() || false;
+
+    const jsCode = extendJsCode(compiledResult[ArtifactFileType.JS], isNode);
 
     asset.type = "js";
-    const jsCode =
-      compiledResult[ArtifactFileType.JS] +
-      `let instance = null;
-      export async function initWasm() {
-        if (instance == null) {
-          let url = new URL("output.wasm", import.meta.url);
-          instance = await instantiate(
-            await ${
-              //asset.env.isNode
-              // ? `WebAssembly.compile(await (await import("node:fs/promises")).readFile(url))`
-              //: `WebAssembly.compileStreaming(fetch(url))`
-              `WebAssembly.compileStreaming(fetch(url))`
-            },
-            {}
-          );
-        }
-        return instance;
-      }`;
-
     asset.setCode(jsCode);
 
     console.log(
@@ -276,31 +222,10 @@ module.exports = new Transformer({
 
     // const content = fs.readFileSync(absolutePath, "utf8");
 
-    // Write types for the WASM module to the disk
-    try {
-      fs.writeFileSync(
-        `./assembly/../WasmModule.d.ts`,
-        compiledResult?.[ArtifactFileType.D_TS] +
-          "\n\n" +
-          `/** Shape of the WASM module compiled from AssemblyScript */\n` +
-          `export type WasmModule = typeof __AdaptedExports;`
-      );
-      console.log(`${PREF} '.d.ts' file written successfully!`);
-    } catch (error) {
-      console.error(`${PREF} Error writing to file: ${error}`);
-    }
-    /*
-        // Write the generated JS glue for the WASM module to the disk
-        try {
-          fs.writeFileSync(`./assembly/../glue.js`, jsCode);
-          console.log(`${PREF} 'assembly.js' file written successfully!`);
-        } catch (error) {
-          console.error(`${PREF} Error writing to file glue.js: ${error}`);
-        }
-    */
+    writeDeclarationFile(compiledResult?.[ArtifactFileType.D_TS]);
+
     return [
       asset,
-      // TODO: uniqueKey needs to be the Wasm module was imported on the JS side.
       {
         type: "wasm",
         content: compiledResult[ArtifactFileType.WASM],

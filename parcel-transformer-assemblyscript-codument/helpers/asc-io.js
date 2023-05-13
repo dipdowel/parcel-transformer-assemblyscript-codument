@@ -1,4 +1,4 @@
-const { ArtifactFileType } = require("./artifact-file-type");
+const { ArtifactFileType } = require("../artifact-file-type");
 const fs = require("fs");
 
 // TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
