@@ -230,14 +230,12 @@ module.exports = new Transformer({
     // Print the MAP compilation artifact
     // console.log(`${PREF} MAP :\n\n${compiledResult[ArtifactFileType.MAP]}\n\n\n`);
 
-    // fs.writeFileSync("maps.lala.ts", compiledResult[ArtifactFileType.MAP]);
+    // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 
     const sourceMap = new SourceMap();
     // sourceMap.addVLQMap(compiledResult[ArtifactFileType.MAP]);
 
     const ascMap = compiledResult[ArtifactFileType.MAP];
-
-    // console.log(`>>> eval maps : ${JSON.stringify(maps)}`);
 
     /*
     sourceMap.addVLQMap({
