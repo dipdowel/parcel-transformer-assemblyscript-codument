@@ -1,12 +1,11 @@
 // "use strict";
 // require = require("esm")(module);
 
-import asc from "assemblyscript/dist/asc";
+// import asc from "assemblyscript/dist/asc";
 
 // import fs  from "fs";
 
-import path from "path";
-
+import * as path from "path";
 import ThrowableDiagnostic, { md } from "@parcel/diagnostic";
 
 import { Transformer } from "@parcel/plugin";
@@ -25,6 +24,9 @@ import { throwTransformerError } from "./helpers/throw-transformer-error";
 import * as stream from "stream";
 import { defaultError } from "./default-error";
 
+// import { getAsc } from "./esm2";
+// import { getAsc } from "./jsWrapper";
+
 /*
     TODO: It's a little faster to prototype in JS,
     TODO: but it's way easier to maintain a TypeScript project in the long run.
@@ -35,7 +37,7 @@ import { defaultError } from "./default-error";
  */
 
 // /**  An instance of AssemblyScript Compiler for programmatic usage. */
-// let asc: { main: Function };
+let asc: { main: Function };
 
 /**
  * Logging prefix
@@ -159,11 +161,10 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
-    /*
     // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
     await (async () => {
       // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
-      asc = await import("assemblyscript/dist/asc");
+      asc = await import("assemblyscript/dist/asc.js");
       console.log(`${PREF} 🚀 AssemblyScript compiler loaded`);
     })().catch((e) => {
       throwTransformerError({
@@ -171,7 +172,7 @@ module.exports = new Transformer({
         message: `${PREF} Could not find AssemblyScript installation in NODE_MODULES: ${e}`,
       });
     });
-*/
+
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
     let compilationResult;

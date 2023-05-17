@@ -1,51 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["DOM", "DOM.Iterable", "es6"],
+    //    "lib": ["DOM", "DOM.Iterable", "es6"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "declaration": true,
+    "allowJs": true,
+    "checkJs": false,
+
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "sourceMap": true,
-    "strict": false,
-    "outDir": "dist",
+
     "rootDir": "src",
     "isolatedModules": true,
-    "baseUrl": ".",
-    "types": ["jest", "node"],
-    "composite": true
+
+    "types": [/*"jest",*/ "node"],
+    "composite": true,
+
+    "target": "es2021",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "strict": false
   },
-
-  "include": ["src/**/*"],
-
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["src" /*, "esm.d.ts", "esm2.js"*/],
+  "exclude": ["node_modules"],
+  "types": ["node"]
 }
-
-
-//{
-//  "$schema": "https://json.schemastore.org/tsconfig",
-//  "compilerOptions": {
-//    "module": "esnext",
-//    "target": "esnext",
-//    "moduleResolution": "node",
-//    //    "importHelpers": true,
-//    //    "strict": true,
-//    //    "noEmitHelpers": true,
-//    //    "sourceMap": true,
-//    //    "esModuleInterop": true,
-//    //    "lib": ["DOM", "DOM.Iterable", "esnext"],
-//    //    "types": []
-//    //    "baseUrl": ".",
-//    //    "paths": {
-//    //      "@common/*": ["../common/*"]
-//    //    }
-//  },
-//
-//  //  "include": ["./src/**/*"]
-//}
