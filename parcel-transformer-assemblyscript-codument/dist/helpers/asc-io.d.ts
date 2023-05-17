@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { ArtifactFileType } from "../artifact-file-type";
 /**
  * AssemblyScript Compiler IO hooks.
