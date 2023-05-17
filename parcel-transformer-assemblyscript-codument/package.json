@@ -7,8 +7,10 @@
     "clean:dist": "rimraf dist/*",
     "clean:incremental": "rimraf tsconfig.tsbuildinfo",
     "clean": "yarn clean:dist && yarn clean:incremental",
+    "copy-to-example": "cp -r ../parcel-transformer-assemblyscript-codument ../example/node_modules/",
     "build": "yarn clean && tsc && git add ./dist",
-    "start": "echo && echo !!! NOT USED !!! && echo ##yarn clean:dist && ts-node src/index.ts"
+    "start": "echo && echo !!! NOT USED !!! && echo ##yarn clean:dist && ts-node src/index.ts",
+    "go": "yarn build && yarn copy-to-example"
   },
   "dependencies": {
     "assemblyscript": "^0.27.5"
