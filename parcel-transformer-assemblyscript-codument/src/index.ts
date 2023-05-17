@@ -16,16 +16,29 @@ import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
 
 import { throwTransformerError } from "./helpers/throw-transformer-error";
-import * as stream from "stream";
+import * as stream from "stream"; // FIXME: remove?
 import { defaultError } from "./default-error";
 
 /*
-    TODO: It's a little faster to prototype in JS,
-    TODO: but it's way easier to maintain a TypeScript project in the long run.
+    TODO:  # GENERAL
+    TODO: ======================================================================
+    TODO: - Switch TS-compiler to 'strict' and fix-fix-fix!!!
+    TODO: - Add a unit-test framework
+    TODO: - Start writing unit tests
+    TODO: - Pick up FIXMEs and TODOs from around the code every now and then
+    TODO: - Make sure JSDoc is in order, we need a 100% doc coverage!
     TODO:
-    TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    TODO: !!! CONVERT THE TRANSFORMER TO PROPER TypeScript !!!
-    TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    TODO:  # CONFIGURATION
+    TODO: ======================================================================
+    TODO: - Create a custom configuration file for this transformer
+    TODO: - Add means for reading and parsing the configuration file
+    TODO: - Add sensible built-in defaults for all the config keys
+    TODO:
+    TODO:  # LOGGING
+    TODO: ======================================================================
+    TODO: - Stream all the logging through a custom logger function
+    TODO: - Hide all the logging by default
+    TODO: - Add a configuration key to enable all the verbose logging
  */
 
 // /**  An instance of AssemblyScript Compiler for programmatic usage. */
