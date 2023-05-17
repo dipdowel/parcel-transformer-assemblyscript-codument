@@ -4,8 +4,11 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "start": "ts-node src/index.ts"
+    "clean:dist": "rimraf dist/*",
+    "clean:incremental": "rimraf tsconfig.tsbuildinfo",
+    "clean": "yarn clean:dist && yarn clean:incremental",
+    "build": "yarn clean && tsc && git add ./dist",
+    "start": "echo && echo !!! NOT USED !!! && echo ##yarn clean:dist && ts-node src/index.ts"
   },
   "dependencies": {
     "assemblyscript": "^0.27.5"
@@ -17,7 +20,8 @@
     "@parcel/plugin": "^2.8.3",
     "@types/node": "^20.1.7",
     "typescript": "^5.0.4",
-    "wabt": "^1.0.24"
+    "wabt": "^1.0.24",
+    "rimraf": "^5.0.0"
   },
   "engines": {
     "node": ">=12",
