@@ -7,7 +7,7 @@ const PREF = "[ASC][WDF]";
  * The `.d.ts` file should contain all the signatures of callable function and accessible properties of the WASM module.
  * @param content
  */
-export function writeDeclarationFile(content) {
+export function writeDeclarationFile(content: string) {
   if (!content) {
     console.error(`${PREF} '.d.ts' has no content!`);
     return;

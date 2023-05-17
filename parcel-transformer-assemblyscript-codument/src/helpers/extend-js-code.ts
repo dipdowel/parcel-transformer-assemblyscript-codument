@@ -4,7 +4,7 @@
  * @param isNode
  * @return {string}
  */
-export function extendJsCode(jsCode, isNode) {
+export function extendJsCode(jsCode: string, isNode: boolean) {
   // FIXME: "output.wasm" should not be hardcoded! Pass it from the outside
   return (
     jsCode +

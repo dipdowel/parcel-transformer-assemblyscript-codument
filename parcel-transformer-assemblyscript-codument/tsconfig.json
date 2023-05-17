@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["DOM", "DOM.Iterable", "es6"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "types": ["jest", "node"]
+  },
+  "include": ["src/**/*"],
+
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
+
+
+//{
+//  "$schema": "https://json.schemastore.org/tsconfig",
+//  "compilerOptions": {
+//    "module": "esnext",
+//    "target": "esnext",
+//    "moduleResolution": "node",
+//    //    "importHelpers": true,
+//    //    "strict": true,
+//    //    "noEmitHelpers": true,
+//    //    "sourceMap": true,
+//    //    "esModuleInterop": true,
+//    //    "lib": ["DOM", "DOM.Iterable", "esnext"],
+//    //    "types": []
+//    //    "baseUrl": ".",
+//    //    "paths": {
+//    //      "@common/*": ["../common/*"]
+//    //    }
+//  },
+//
+//  //  "include": ["./src/**/*"]
+//}

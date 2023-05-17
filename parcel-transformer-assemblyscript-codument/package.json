@@ -3,23 +3,45 @@
   "version": "0.1.0",
   "description": "A plugin for Parcel to enable usage of AssemblyScript code in Parcel bundler",
   "license": "Apache 2.0",
-  "main": "index.js",
+  "COMMENT#main": "src/index.ts",
+  "main": "dist/index.js.js",
+  "module": "./esm/index.js",
+  "type": "commonjs",
   "author": "dipdowel aka Hoofdkantoor",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "esm",
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "watch": "tsbb watch src/*.ts --useBabel",
+    "build": "tsbb build src/*.ts --useBabel",
+    "test": "rm -rf .parcel-cache && rm -rf dist && node test/index.cjs"
+  },
   "repository": "https://github.com/dipdowel/parcel-transformer-assemblyscript-codument.git",
   "dependencies": {
-    "@parcel/diagnostic": "^2.0.0",
-    "@parcel/plugin": "^2.0.0",
-    "assemblyscript": "^0.27.5",
-    "wabt": "^1.0.24"
+
   },
   "engines": {
     "node": ">=12",
     "parcel": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.16.7",
+    "@parcel/config-default": "^2.8.3",
+    "@parcel/core": "^2.8.3",
+    "@parcel/diagnostic": "^2.8.3",
+    "@parcel/plugin": "^2.8.3",
+    "assemblyscript": "^0.27.5",
+    "tsbb": "^4.1.5",
+    "wabt": "^1.0.24",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.21.5",
     "esm": "^3.2.25"
   }
 }
+
+

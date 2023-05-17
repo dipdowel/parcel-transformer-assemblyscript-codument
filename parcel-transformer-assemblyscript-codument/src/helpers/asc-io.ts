@@ -1,4 +1,5 @@
-const { ArtifactFileType } = require("../artifact-file-type");
+import { ArtifactFileType } from "../artifact-file-type";
+
 const fs = require("fs");
 
 // TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -23,7 +24,7 @@ const DOT_PADDING = 100;
  * `asconfig.json` read from the user's project root directory
  * @type {JSON}
  */
-let asconfigCache = null;
+let asconfigCache: string = null;
 
 /**
  * AssemblyScript Compiler IO hooks.
@@ -34,66 +35,6 @@ let asconfigCache = null;
  */
 export const ascIO = {
   /**
-   * Overrides the ASC functionality of reading from the file system.
-   * - NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
-   * - Adds some logging for the read operations.
-   * @param {string} inputCode
-   * @param {string} filename
-   * @param {string} baseDir
-   * @return {Promise<unknown>}
-   */
-  read: (inputCode, filename, baseDir) => {
-    // const absolutePath = `${baseDir}/${filename}`;
-    let absolutePath = `./assembly/${filename}`;
-    try {
-      // const isConfigFile = filename.toLowerCase().trim() === `asconfig.json`;
-      const isConfigFile = filename
-        .toLowerCase()
-        .trim()
-        .endsWith(`asconfig.json`);
-
-      if (isConfigFile) {
-        absolutePath = "./asconfig.json";
-      }
-
-      // return cached AssemblyScript config file if requested *and* previously cached
-      if (isConfigFile && asconfigCache) {
-        console.log(
-          `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
-            ` ${content.length} bytes [CACHED]`
-        );
-        return asconfigCache;
-      }
-
-      const content = fs.readFileSync(absolutePath, "utf8");
-
-      console.log(
-        `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
-          ` ${content.length} bytes`
-      );
-      if (isConfigFile) {
-        // Cache AssemblyScript config file
-        asconfigCache = content;
-        console.log(
-          `[ASC] 📦 Cached ${absolutePath} `.padEnd(DOT_PADDING, ".") +
-            ` ${content.length} bytes`
-        );
-      }
-      return content;
-      //
-    } catch (err) {
-      const msg = `${PREF_READ} Error reading ${absolutePath} :: ${err}`;
-      console.error(msg);
-      throw new Error(msg); // Should I`throw` here or just call `console.error()`?
-    }
-    // FIXME: Do we want this function to be async after all?
-    // return new Promise((resolve) => {
-    //   resolve();
-    //   reject();
-    // });
-  },
-
-  /**
    * Overrides the ASC functionality of writing to the file system.
    * Writes a compilation artifact file into an object in memory, to be passed to Parcel.
    * @param {{[p: string]: null, stats: null}} compilationArtifacts -- the result of the compilation gets written to this object
@@ -102,7 +43,15 @@ export const ascIO = {
    * @param {string} baseDir
    * @return {Promise<*>}
    */
-  write: (compilationArtifacts, filename, contents, baseDir) => {
+  write: (
+    compilationArtifacts: Record<
+      ArtifactFileType,
+      string | Buffer | Uint8Array
+    >,
+    filename: string,
+    contents: string | Buffer | Uint8Array,
+    baseDir: string
+  ) => {
     const path = `${baseDir}/${filename}`;
     contents &&
       console.log(
@@ -136,8 +85,68 @@ export const ascIO = {
 
     // FIXME: Do we want this function to be async after all?
     // FIXME: Do we want to reject the promise upon an unknown file format?
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       resolve();
     });
+  },
+
+  /**
+   * Overrides the ASC functionality of reading from the file system.
+   * - NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
+   * - Adds some logging for the read operations.
+   * @param {string} inputCode
+   * @param {string} filename
+   * @param {string} baseDir
+   * @return {Promise<unknown>}
+   */
+  read: (inputCode: string, filename: string, baseDir: string) => {
+    // const absolutePath = `${baseDir}/${filename}`;
+    let absolutePath = `./assembly/${filename}`;
+    try {
+      // const isConfigFile = filename.toLowerCase().trim() === `asconfig.json`;
+      const isConfigFile = filename
+        .toLowerCase()
+        .trim()
+        .endsWith(`asconfig.json`);
+
+      if (isConfigFile) {
+        absolutePath = "./asconfig.json";
+      }
+
+      // return cached AssemblyScript config file if requested *and* previously cached
+      if (isConfigFile && asconfigCache) {
+        console.log(
+          `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
+            ` ${asconfigCache.length} bytes [CACHED]`
+        );
+        return asconfigCache;
+      }
+
+      const content = fs.readFileSync(absolutePath, "utf8");
+
+      console.log(
+        `${PREF_READ} ${absolutePath} `.padEnd(DOT_PADDING, ".") +
+          ` ${content.length} bytes`
+      );
+      if (isConfigFile) {
+        // Cache AssemblyScript config file
+        asconfigCache = content;
+        console.log(
+          `[ASC] 📦 Cached ${absolutePath} `.padEnd(DOT_PADDING, ".") +
+            ` ${content.length} bytes`
+        );
+      }
+      return content;
+      //
+    } catch (err) {
+      const msg = `${PREF_READ} Error reading ${absolutePath} :: ${err}`;
+      console.error(msg);
+      throw new Error(msg); // Should I`throw` here or just call `console.error()`?
+    }
+    // FIXME: Do we want this function to be async after all?
+    // return new Promise((resolve) => {
+    //   resolve();
+    //   reject();
+    // });
   },
 };

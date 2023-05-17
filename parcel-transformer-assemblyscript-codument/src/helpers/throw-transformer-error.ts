@@ -1,10 +1,11 @@
-const { default: ThrowableDiagnostic } = require("@parcel/diagnostic");
+import ThrowableDiagnostic from "@parcel/diagnostic";
+import { ErrorObj } from "../default-error";
 
 /**
  * Throws an error in the Parcel way.
  * @param error
  */
-export function throwTransformerError(error) {
+export function throwTransformerError(error: ErrorObj) {
   throw new ThrowableDiagnostic({
     diagnostic: {
       message: error.message,
