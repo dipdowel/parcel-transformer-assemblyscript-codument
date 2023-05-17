@@ -1,7 +1,6 @@
 // "use strict";
 // require = require("esm")(module);
 
-// import asc from "assemblyscript/asc";
 import asc from "assemblyscript/dist/asc";
 
 // import fs  from "fs";

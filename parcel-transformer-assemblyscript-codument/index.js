@@ -1,5 +1,5 @@
 // const anotherFile = require("./dist/index");
 // anotherFile();
-
-const content = require("./dist/index");
+require = require("esm")(module);
+const content = require("./esm/index");
 module.exports = content;

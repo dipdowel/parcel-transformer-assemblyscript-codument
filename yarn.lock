@@ -2362,7 +2362,7 @@ arrify@^1.0.1:
 
 assemblyscript@^0.27.5:
   version "0.27.5"
-  resolved "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.27.5.tgz"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.5.tgz#23aad32f3c552d672da29fd63aeb1d39395d0d83"
   integrity sha512-8CPn+SPMrvvDEa6CQylYOd+Vu5ubyrVhWw1Iy9EXyTan7+8jB5R5trspf3jsMUrh3urVRA0YR9c3U84biny1QA==
   dependencies:
     binaryen "112.0.0-nightly.20230411"
