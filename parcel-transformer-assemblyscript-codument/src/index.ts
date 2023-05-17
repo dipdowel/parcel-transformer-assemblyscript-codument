@@ -1,9 +1,4 @@
 // "use strict";
-// require = require("esm")(module);
-
-// import asc from "assemblyscript/dist/asc";
-
-// import fs  from "fs";
 
 import * as path from "path";
 import ThrowableDiagnostic, { md } from "@parcel/diagnostic";
@@ -23,9 +18,6 @@ import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import * as stream from "stream";
 import { defaultError } from "./default-error";
-
-// import { getAsc } from "./esm2";
-// import { getAsc } from "./jsWrapper";
 
 /*
     TODO: It's a little faster to prototype in JS,

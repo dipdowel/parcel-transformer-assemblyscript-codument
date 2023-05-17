@@ -8,8 +8,7 @@
     "start": "ts-node src/index.ts"
   },
   "dependencies": {
-    "assemblyscript": "^0.27.5",
-    "esm": "^3.2.25"
+    "assemblyscript": "^0.27.5"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.8.3",
