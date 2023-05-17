@@ -36,8 +36,6 @@ const extend_js_code_1 = require("./helpers/extend-js-code");
 const write_declaration_file_1 = require("./helpers/write-declaration-file");
 const throw_transformer_error_1 = require("./helpers/throw-transformer-error");
 const default_error_1 = require("./default-error");
-// import { getAsc } from "./esm2";
-// import { getAsc } from "./jsWrapper";
 /*
     TODO: It's a little faster to prototype in JS,
     TODO: but it's way easier to maintain a TypeScript project in the long run.
