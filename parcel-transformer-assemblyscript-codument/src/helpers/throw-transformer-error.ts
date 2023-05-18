@@ -5,7 +5,7 @@ import { ParcelError } from "../default-error";
  * Throws an error in the Parcel way.
  * @param error
  */
-export function throwTransformerError(error: ParcelError) {
+export function throwTransformerError(error: ParcelError): never {
   throw new ThrowableDiagnostic({
     diagnostic: {
       message: error.message,
