@@ -63,6 +63,15 @@ module.exports = new Transformer({
           compiledResult: CompilationArtifacts;
         });
 
+    // FIXME: this is super ugly and takes too much space. Compress using something like:
+    /*
+    const {
+            compiledResult,
+            invalidateOnFileChange = [],
+            invalidateOnFileCreate = [],
+            invalidateOnEnvChange = [],
+          } = compilationResult ?? {};
+     */
     let compiledResult,
       invalidateOnFileChange,
       invalidateOnFileCreate,
