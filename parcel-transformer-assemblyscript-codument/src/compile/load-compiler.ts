@@ -1,4 +1,4 @@
-import { defaultError, ParcelError } from "./default-error";
+import { defaultError, ParcelError } from "../default-error";
 import * as Options from "types:assemblyscript/util/options";
 import * as Compiler from "types:assemblyscript/cli/index";
 
@@ -16,7 +16,7 @@ export type AscLoadResult = {
 };
 
 /** Tries to load AssemblyScript compiler that can be used programmatically */
-export async function loadAssemblyScriptCompiler(): Promise<AscLoadResult> {
+export async function loadCompiler(): Promise<AscLoadResult> {
   try {
     // AssemblyScript Compiler is an ESM, hence the trickery to load it into a CommonJS file.
     // NB: in order to make it all work  `tsconfig.json` should contain setting `"moduleResolution": "node16"`

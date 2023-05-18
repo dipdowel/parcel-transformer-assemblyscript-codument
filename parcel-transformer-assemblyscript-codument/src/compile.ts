@@ -1,11 +1,8 @@
 import path from "path";
 import { ArtifactFileType } from "./artifact-file-type";
-import { ascIO } from "./helpers/asc-io";
-import {
-  ASC,
-  loadAssemblyScriptCompiler,
-} from "./load-assembly-script-compiler";
+import { ASC, loadCompiler } from "./compile/load-compiler";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
+import { read, write } from "./compile/io";
 
 /**
  * Logging prefix
@@ -21,13 +18,13 @@ let asc: ASC;
  * @param asset
  * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
  */
-export async function compileAssemblyScript(asset: any /* FIXME: the type! */) {
+export async function compile(asset: any /* FIXME: the type! */) {
   //FIXME: #############################################################################################################
   //FIXME: 1. Extract into a separate function
   //FIXME: 2. Load just once and then mem-cache
   //FIXME: 3. Print a log on every usage so that we could see that caching actually made sense
 
-  const { asc: compiler, error: ascError } = await loadAssemblyScriptCompiler();
+  const { asc: compiler, error: ascError } = await loadCompiler();
 
   // FIXME: this is ugly, fix it!
   asc = compiler;
@@ -100,7 +97,7 @@ export async function compileAssemblyScript(asset: any /* FIXME: the type! */) {
          * @See `ascIO.read()`
          */
         readFile: (absolutePath: string, baseDir: string = "./assembly/") =>
-          ascIO.read(inputCode, absolutePath, baseDir),
+          read(inputCode, absolutePath, baseDir),
 
         /**
          * Here we hook into how ASC writes files to the file system,
@@ -111,7 +108,7 @@ export async function compileAssemblyScript(asset: any /* FIXME: the type! */) {
           filename: string,
           contents: string | Buffer | Uint8Array /*Uint8Array*/,
           baseDir: string
-        ) => ascIO.write(compilationArtifacts, filename, contents, baseDir),
+        ) => write(compilationArtifacts, filename, contents, baseDir),
       }
     ));
   // [AssemblyScript Compiler] ends

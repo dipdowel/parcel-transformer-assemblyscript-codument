@@ -8,7 +8,7 @@ import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
-import { compileAssemblyScript } from "./compile-assembly-script";
+import { compile } from "./compile";
 
 /*
     TODO:  # GENERAL
@@ -56,7 +56,7 @@ module.exports = new Transformer({
     let compilationResult;
 
     try {
-      compilationResult = await compileAssemblyScript({
+      compilationResult = await compile({
         filePath: asset.filePath,
         inputCode: await asset.getCode(),
       });
