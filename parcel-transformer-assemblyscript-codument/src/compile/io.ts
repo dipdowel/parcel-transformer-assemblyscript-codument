@@ -35,7 +35,7 @@ const DOT_PADDING = 100;
  * @type {JSON}
  * FIXME: So is it `JSON` or `string` after all?!
  */
-let asconfigCache: string = null;
+let asconfigCache: string;
 
 /**
  * Overrides the ASC functionality of writing to the file system.

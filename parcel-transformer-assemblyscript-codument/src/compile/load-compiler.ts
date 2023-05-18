@@ -10,6 +10,9 @@ export type ASC = typeof Compiler;
 /** AssemblyScript Compiler Options type, as defined in `assemblyscript` package */
 export type ASCOptions = typeof Options;
 
+/** What the AS compiler returns */
+export type APIResult = Compiler.APIResult;
+
 export type AscLoadResult = {
   asc?: ASC;
   error?: ParcelError;

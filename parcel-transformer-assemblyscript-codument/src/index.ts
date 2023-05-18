@@ -9,6 +9,8 @@ import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
 import { compile } from "./compile";
+import { ConfigRequest } from "./parcel-types";
+import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 
 /*
     TODO:  # GENERAL
@@ -40,6 +42,8 @@ import { compile } from "./compile";
 const PREF = "[ASC]";
 
 module.exports = new Transformer({
+  // FIXME: get rid of `ts-ignore`!
+  // @ts-ignore
   async transform({ asset, logger, options, config }) {
     //
     // TODO: Come up with a way of passing the ASC logging to Parcel properly, so that Parcel would print the logs
@@ -53,48 +57,65 @@ module.exports = new Transformer({
 
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
-    let compilationResult;
+    let compilationResult:
+      | undefined
+      | (ConfigRequest & {
+          compiledResult: CompilationArtifacts;
+        });
+
+    let compiledResult,
+      invalidateOnFileChange,
+      invalidateOnFileCreate,
+      invalidateOnEnvChange;
 
     try {
       compilationResult = await compile({
         filePath: asset.filePath,
         inputCode: await asset.getCode(),
       });
+
+      compiledResult = compilationResult?.compiledResult;
+      invalidateOnFileChange = compilationResult?.invalidateOnFileChange;
+      invalidateOnFileCreate = compilationResult?.invalidateOnFileCreate;
+      invalidateOnEnvChange = compilationResult?.invalidateOnEnvChange;
     } catch (e) {
       throwTransformerError({
         ...defaultError,
         message: `${PREF} Could not compile Assembly Script: ${e}`,
       });
+      return;
     }
 
-    const {
-      compiledResult,
-      invalidateOnFileChange,
-      invalidateOnFileCreate,
-      invalidateOnEnvChange,
-    } = compilationResult;
-
-    for (let file of invalidateOnFileChange) {
-      asset.invalidateOnFileChange(file);
+    if (invalidateOnFileChange) {
+      for (let file of invalidateOnFileChange) {
+        asset.invalidateOnFileChange(file);
+      }
     }
 
-    for (let file of invalidateOnFileCreate) {
-      asset.invalidateOnFileCreate({ filePath: file });
+    if (invalidateOnFileCreate) {
+      for (let file of invalidateOnFileCreate) {
+        // FIXME: There's something fishy here, get rid of `ts-ignore`!
+        // @ts-ignore
+        asset.invalidateOnFileCreate({ filePath: file });
+      }
     }
 
-    for (let envvar of invalidateOnEnvChange) {
-      asset.invalidateOnEnvChange(envvar);
+    if (invalidateOnEnvChange) {
+      for (let envvar of invalidateOnEnvChange) {
+        asset.invalidateOnEnvChange(envvar);
+      }
     }
 
     const isNode = asset.env.isNode() || false;
+    if (compiledResult) {
+      const jsCode = extendJsCode(
+        compiledResult[ArtifactFileType.JS] as string,
+        isNode
+      );
+      asset.type = "js";
+      asset.setCode(jsCode);
+    }
 
-    const jsCode = extendJsCode(
-      compiledResult[ArtifactFileType.JS] as string,
-      isNode
-    );
-
-    asset.type = "js";
-    asset.setCode(jsCode);
     asset.setMap(new SourceMap(options.projectRoot));
 
     console.log(
@@ -112,7 +133,7 @@ module.exports = new Transformer({
       }`,
     });
 
-    console.log(`${PREF} Stats:\n${compiledResult.stats}`);
+    console.log(`${PREF} Stats:\n${compiledResult?.stats}`);
 
     //  Print raw WASM module, which is a `Uint8Array` instance
     // console.log(compiledResult[ArtifactFileType.WASM]);
@@ -130,7 +151,7 @@ module.exports = new Transformer({
 
     // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 
-    const ascMap = JSON.parse(compiledResult[ArtifactFileType.MAP] as string);
+    const ascMap = JSON.parse(compiledResult?.[ArtifactFileType.MAP] as string);
 
     const wasmSourceMap = new SourceMap(options.projectRoot);
     wasmSourceMap.addVLQMap(ascMap);
@@ -139,7 +160,7 @@ module.exports = new Transformer({
       asset,
       {
         type: "wasm",
-        content: compiledResult[ArtifactFileType.WASM],
+        content: compiledResult?.[ArtifactFileType.WASM],
         uniqueKey: "output.wasm",
         map: wasmSourceMap,
       },
