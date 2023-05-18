@@ -1,7 +1,11 @@
 import path from "path";
 import { ArtifactFileType } from "./artifact-file-type";
 import { ascIO } from "./helpers/asc-io";
-import { ASC } from "./load-assembly-script-compiler";
+import {
+  ASC,
+  loadAssemblyScriptCompiler,
+} from "./load-assembly-script-compiler";
+import { throwTransformerError } from "./helpers/throw-transformer-error";
 
 /**
  * Logging prefix
@@ -9,15 +13,31 @@ import { ASC } from "./load-assembly-script-compiler";
  */
 const PREF = "[ASC][COMPILE]";
 
+// /**  An instance of AssemblyScript Compiler for programmatic usage. */
+let asc: ASC;
+
 /**
  * TODO: Write JSDoc!
  * @param asset
  * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
  */
-export async function compileAssemblyScript(
-  asset: any /* FIXME: the type! */,
-  asc: ASC
-) {
+export async function compileAssemblyScript(asset: any /* FIXME: the type! */) {
+  //FIXME: #############################################################################################################
+  //FIXME: 1. Extract into a separate function
+  //FIXME: 2. Load just once and then mem-cache
+  //FIXME: 3. Print a log on every usage so that we could see that caching actually made sense
+
+  const { asc: compiler, error: ascError } = await loadAssemblyScriptCompiler();
+
+  // FIXME: this is ugly, fix it!
+  asc = compiler;
+
+  if (ascError) {
+    throwTransformerError(ascError);
+    return;
+  }
+  //FIXME: #############################################################################################################
+
   const { filePath, inputCode /*, readFile */ } = asset;
   // console.log(`>>> compileAssemblyScript(), filePath: ${filePath}`);
   // console.log(`>>> compileAssemblyScript(), inputCode: ${inputCode}`);

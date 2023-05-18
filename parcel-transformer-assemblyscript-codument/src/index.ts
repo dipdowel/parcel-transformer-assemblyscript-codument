@@ -9,10 +9,6 @@ import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
 import { compileAssemblyScript } from "./compile-assembly-script";
-import {
-  ASC,
-  loadAssemblyScriptCompiler,
-} from "./load-assembly-script-compiler";
 
 /*
     TODO:  # GENERAL
@@ -37,9 +33,6 @@ import {
     TODO: - Add a configuration key to enable all the verbose logging
  */
 
-// /**  An instance of AssemblyScript Compiler for programmatic usage. */
-let asc: ASC;
-
 /**
  * Logging prefix
  * @type {string}
@@ -58,29 +51,15 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
-    const { asc: compiler, error: ascError } =
-      await loadAssemblyScriptCompiler();
-
-    // FIXME: this is ugly, fix it!
-    asc = compiler;
-
-    if (ascError) {
-      throwTransformerError(ascError);
-      return;
-    }
-
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
     let compilationResult;
 
     try {
-      compilationResult = await compileAssemblyScript(
-        {
-          filePath: asset.filePath,
-          inputCode: await asset.getCode(),
-        },
-        asc
-      );
+      compilationResult = await compileAssemblyScript({
+        filePath: asset.filePath,
+        inputCode: await asset.getCode(),
+      });
     } catch (e) {
       throwTransformerError({
         ...defaultError,
