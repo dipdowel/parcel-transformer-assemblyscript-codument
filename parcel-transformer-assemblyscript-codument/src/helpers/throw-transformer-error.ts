@@ -1,11 +1,11 @@
 import ThrowableDiagnostic from "@parcel/diagnostic";
-import { ErrorObj } from "../default-error";
+import { ParcelError } from "../default-error";
 
 /**
  * Throws an error in the Parcel way.
  * @param error
  */
-export function throwTransformerError(error: ErrorObj) {
+export function throwTransformerError(error: ParcelError) {
   throw new ThrowableDiagnostic({
     diagnostic: {
       message: error.message,

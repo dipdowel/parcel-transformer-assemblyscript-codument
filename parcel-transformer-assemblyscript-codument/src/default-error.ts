@@ -17,4 +17,4 @@ export const defaultError = {
 };
 
 /** FIXME */
-export type ErrorObj = typeof defaultError;
+export type ParcelError = typeof defaultError;

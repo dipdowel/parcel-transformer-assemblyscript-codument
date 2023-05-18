@@ -18,6 +18,10 @@ import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import * as stream from "stream"; // FIXME: remove?
 import { defaultError } from "./default-error";
+import {
+  ASC,
+  loadAssemblyScriptCompiler,
+} from "./load-assembly-script-compiler";
 
 /*
     TODO:  # GENERAL
@@ -27,6 +31,7 @@ import { defaultError } from "./default-error";
     TODO: - Start writing unit tests
     TODO: - Pick up FIXMEs and TODOs from around the code every now and then
     TODO: - Make sure JSDoc is in order, we need a 100% doc coverage!
+    TODO: - Consider committing `dist` since it's going to be an NPM package (double check!)
     TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
@@ -42,7 +47,7 @@ import { defaultError } from "./default-error";
  */
 
 // /**  An instance of AssemblyScript Compiler for programmatic usage. */
-let asc: { main: Function };
+let asc: ASC;
 
 /**
  * Logging prefix
@@ -90,46 +95,48 @@ async function compileAssemblyScript(asset: any /* FIXME: the type! */) {
 
     /** @See type `Stats` in https://github.com/AssemblyScript/assemblyscript/blob/main/cli/index.d.ts */
     stats,
-  } = await asc.main(
-    [
-      /* Command line options */
-      absolutePath,
-      "--outFile",
-      "output.wasm", // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
-      "--debug", // FIXME: enable/disable debug mode depending on the Parcel mode: "development" or "production".
-      // "--optimize",
-      // "--sourceMap",
-      // "/output.wasm.map",
-      // "--stats",
-    ],
-    {
-      /* Additional API options */
-      // stdout: io.stdout,
-      // stderr: (e, e2) => console.log(new Error(e + " :: " + e2)),
+  } =
+    asc &&
+    (await asc.main(
+      [
+        /* Command line options */
+        absolutePath,
+        "--outFile",
+        "output.wasm", // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
+        "--debug", // FIXME: enable/disable debug mode depending on the Parcel mode: "development" or "production".
+        // "--optimize",
+        // "--sourceMap",
+        // "/output.wasm.map",
+        // "--stats",
+      ],
+      {
+        /* Additional API options */
+        // stdout: io.stdout,
+        // stderr: (e, e2) => console.log(new Error(e + " :: " + e2)),
 
-      /**
-       * Here we hook into how ASC reads files from the file system,
-       * and execute our custom file reading logic
-       * @See `ascIO.read()`
-       */
-      readFile: (absolutePath: string, baseDir: string = "./assembly/") =>
-        ascIO.read(inputCode, absolutePath, baseDir),
+        /**
+         * Here we hook into how ASC reads files from the file system,
+         * and execute our custom file reading logic
+         * @See `ascIO.read()`
+         */
+        readFile: (absolutePath: string, baseDir: string = "./assembly/") =>
+          ascIO.read(inputCode, absolutePath, baseDir),
 
-      /**
-       * Here we hook into how ASC writes files to the file system,
-       * and execute our custom logic of writing to a file.
-       * @See `ascIO.write()`
-       */
-      writeFile: (
-        filename: string,
-        contents: string | Buffer | Uint8Array /*Uint8Array*/,
-        baseDir: string
-      ) => ascIO.write(compilationArtifacts, filename, contents, baseDir),
-    }
-  );
+        /**
+         * Here we hook into how ASC writes files to the file system,
+         * and execute our custom logic of writing to a file.
+         * @See `ascIO.write()`
+         */
+        writeFile: (
+          filename: string,
+          contents: string | Buffer | Uint8Array /*Uint8Array*/,
+          baseDir: string
+        ) => ascIO.write(compilationArtifacts, filename, contents, baseDir),
+      }
+    ));
   // [AssemblyScript Compiler] ends
   // -------------------------------------------------------------------------------------------------------------------
-
+  asc.main;
   // Store the log-friendly string representation of the compilation statistics
   compilationArtifacts.stats = stats.toString();
 
@@ -166,17 +173,16 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
-    // AssemblyScript Compiler is an ESM, hence this trickery to load it into a CommonJS file.
-    await (async () => {
-      // FIXME: we now manually copy `assemblyscript` to `node_modules`, that needs to be managed by `package.json`!
-      asc = await import("assemblyscript/dist/asc.js");
-      console.log(`${PREF} 🚀 AssemblyScript compiler loaded`);
-    })().catch((e) => {
-      throwTransformerError({
-        ...defaultError,
-        message: `${PREF} Could not find AssemblyScript installation in NODE_MODULES: ${e}`,
-      });
-    });
+    const { asc: compiler, error: ascError } =
+      await loadAssemblyScriptCompiler();
+
+    // FIXME: this is ugly, fix it!
+    asc = compiler;
+
+    if (ascError) {
+      throwTransformerError(ascError);
+      return;
+    }
 
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
