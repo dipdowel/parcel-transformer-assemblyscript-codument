@@ -1,11 +1,13 @@
 import { ArtifactFileType } from "../artifact-file-type";
 
+// FIXME: Use `import` here!
 const fs = require("fs");
 
 // TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // TODO:  !!! THIS FILE MUST BE HEAVILY UNIT-TESTED !!!
 // TODO:  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+// TODO:  Turn this file into more of TypeScript style than JS-style
 /**
  * Prefix for logging the reading of files from the FS
  * @type {string}
@@ -28,6 +30,7 @@ let asconfigCache: string = null;
 
 /**
  * AssemblyScript Compiler IO hooks.
+ * FIXME: improve the JSDoc below!
  * We don't want to let AssemblyScript Compiler interact with the filesystem on its own,
  * so we use custom `read()` and `write()` functions to hook into all the read/write operations
  * and customise them.
