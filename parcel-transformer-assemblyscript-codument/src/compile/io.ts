@@ -33,6 +33,7 @@ const DOT_PADDING = 100;
 /**
  * `asconfig.json` read from the user's project root directory
  * @type {JSON}
+ * FIXME: So is it `JSON` or `string` after all?!
  */
 let asconfigCache: string = null;
 

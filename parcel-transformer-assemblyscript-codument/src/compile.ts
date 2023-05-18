@@ -22,7 +22,7 @@ export async function compile(asset: any /* FIXME: the type! */) {
   //FIXME: #############################################################################################################
   //FIXME: 1. Extract into a separate function
   //FIXME: 2. Load just once and then mem-cache
-  //FIXME: 3. Print a log on every usage so that we could see that caching actually made sense
+  //FIXME: 3. Print a log on every usage to see whether the caching actually makes sense here
 
   const { asc: compiler, error: ascError } = await loadCompiler();
 
@@ -48,8 +48,8 @@ export async function compile(asset: any /* FIXME: the type! */) {
   /**
    * A collection of all the compilation artifacts that ASC produces + compilation statistics info
    * @type {{[p: string]: null, stats: null}}
+   * FIXME: tighten the type! It's clear which fields are binary and which are a `string`!
    */
-
   let compilationArtifacts: Record<ArtifactFileType, string | Buffer> & {
     stats: string;
   } = {
