@@ -2,7 +2,7 @@ import type { FileCreateInvalidation, FilePath } from "@parcel/types";
 
 import path from "path";
 
-import { APIResult, loadCompiler } from "./compile/load-compiler";
+import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
 
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
@@ -21,6 +21,9 @@ export type Compiled = {
   compilationArtifacts: CompilationArtifacts;
 };
 
+// AssemblyScript Compiler suitable for programmatic usage.
+let asc: ASC | undefined;
+
 /**
  *
  * @param asset
@@ -38,8 +41,11 @@ export async function compile(asset: {
   //FIXME: 1. Load just once and then mem-cache
   //FIXME: 2. Print a log on every usage to see whether the caching actually makes sense here
 
-  //  Load  AssemblyScript Compiler suitable for programmatic usage.
-  const asc = await loadCompiler();
+  //  Load
+  if (!asc) {
+    asc = await loadCompiler();
+  }
+
   //FIXME: #############################################################################################################
 
   const { filePath, inputCode /*, readFile */ } = asset;
@@ -128,10 +134,13 @@ export async function compile(asset: {
   // #####################################################################################################################
 
   return {
-    // FIXME: rename `compiledResult` -> `compilationArtifacts`
     compilationArtifacts: compilationArtifacts as CompilationArtifacts,
     // @ts-ignore
-    invalidateOnFileChange: [], // FIXME: Fill in with the filenames ASC tries to read
+    invalidateOnFileChange: [
+      "./assembly/index.as.ts",
+      "./assembly/package1/sub-package-1/helper.ts",
+      "./assembly/data.ts",
+    ], // FIXME: Fill in with the filenames ASC tries to read
     // @ts-ignore
     invalidateOnFileCreate: [], // FIXME: Fill in with the filenames created before that ASC sees for the second or a later time (Is it really so?)
     // @ts-ignore

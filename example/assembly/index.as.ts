@@ -15,6 +15,10 @@ export function add(a: i32, b: i32): i32 {
   console.log("[WASM] myNumber: " + myNumber.toString(10));
   console.log("[WASM] myArray: " + myArray.toString());
 
+  // The transformer breaks when any change in AS is done
+  console.log("CHANGE THIS STRING TO PROVOKE THE ERROR");
+
+  //
   // Throw an error on purpose
   // const ddd: i32;
   // console.log("[WASM] ddd: " + ddd.toString(10));

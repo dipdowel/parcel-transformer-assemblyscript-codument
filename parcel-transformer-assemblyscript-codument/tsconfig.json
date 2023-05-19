@@ -8,7 +8,7 @@
     "incremental": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "NodeNext",
     "sourceMap": true,
 
     "rootDir": "src",
