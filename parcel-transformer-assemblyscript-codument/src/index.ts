@@ -54,9 +54,7 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
-    // FiXME: add `try/catch` around `compileAssemblyScript()`!
-
-    let compiledResult,
+    let compilationArtifacts,
       invalidateOnFileChange,
       invalidateOnFileCreate,
       invalidateOnEnvChange;
@@ -71,7 +69,7 @@ module.exports = new Transformer({
 
       compilationResult &&
         ({
-          compiledResult,
+          compilationArtifacts,
           invalidateOnFileChange,
           invalidateOnFileCreate,
           invalidateOnEnvChange,
@@ -102,9 +100,9 @@ module.exports = new Transformer({
     }
 
     const isNode = asset.env.isNode() || false;
-    if (compiledResult) {
+    if (compilationArtifacts) {
       const jsCode = extendJsCode(
-        compiledResult[ArtifactFileType.JS] as string,
+        compilationArtifacts[ArtifactFileType.JS] as string,
         isNode
       );
       asset.type = "js";
@@ -115,7 +113,7 @@ module.exports = new Transformer({
 
     console.log(
       `${PREF} Compiled WASM module size: ${
-        compiledResult?.[ArtifactFileType.WASM]?.length
+        compilationArtifacts?.[ArtifactFileType.WASM]?.length
       }`
     );
 
@@ -124,11 +122,11 @@ module.exports = new Transformer({
       origin: "[ASC]",
       name: "n/a",
       message: `# Compiled WASM module size: ${
-        compiledResult?.[ArtifactFileType.WASM]?.length
+        compilationArtifacts?.[ArtifactFileType.WASM]?.length
       }`,
     });
 
-    console.log(`${PREF} Stats:\n${compiledResult?.stats}`);
+    console.log(`${PREF} Stats:\n${compilationArtifacts?.stats}`);
 
     //  Print raw WASM module, which is a `Uint8Array` instance
     // console.log(compiledResult[ArtifactFileType.WASM]);
@@ -139,14 +137,18 @@ module.exports = new Transformer({
     // const content = fs.readFileSync(absolutePath, "utf8");
 
     // A `.d.ts` file with all the signatures of callable function and accessible properties of the WASM module
-    writeDeclarationFile(compiledResult?.[ArtifactFileType.D_TS] as string);
+    writeDeclarationFile(
+      compilationArtifacts?.[ArtifactFileType.D_TS] as string
+    );
 
     // Print the MAP compilation artifact
     // console.log(`${PREF} MAP :\n\n${compiledResult[ArtifactFileType.MAP]}\n\n\n`);
 
     // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 
-    const ascMap = JSON.parse(compiledResult?.[ArtifactFileType.MAP] as string);
+    const ascMap = JSON.parse(
+      compilationArtifacts?.[ArtifactFileType.MAP] as string
+    );
 
     const wasmSourceMap = new SourceMap(options.projectRoot);
     wasmSourceMap.addVLQMap(ascMap);
@@ -155,7 +157,7 @@ module.exports = new Transformer({
       asset,
       {
         type: "wasm",
-        content: compiledResult?.[ArtifactFileType.WASM],
+        content: compilationArtifacts?.[ArtifactFileType.WASM],
         uniqueKey: "output.wasm",
         map: wasmSourceMap,
       },

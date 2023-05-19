@@ -18,7 +18,7 @@ export type Compiled = {
   invalidateOnFileChange: FilePath[];
   invalidateOnFileCreate: FileCreateInvalidation[];
   invalidateOnEnvChange: string[];
-  compiledResult: CompilationArtifacts;
+  compilationArtifacts: CompilationArtifacts;
 };
 
 /**
@@ -129,7 +129,7 @@ export async function compile(asset: {
 
   return {
     // FIXME: rename `compiledResult` -> `compilationArtifacts`
-    compiledResult: compilationArtifacts as CompilationArtifacts,
+    compilationArtifacts: compilationArtifacts as CompilationArtifacts,
     // @ts-ignore
     invalidateOnFileChange: [], // FIXME: Fill in with the filenames ASC tries to read
     // @ts-ignore

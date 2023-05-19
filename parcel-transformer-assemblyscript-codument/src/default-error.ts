@@ -16,5 +16,4 @@ export const defaultError = {
   // },
 };
 
-/** FIXME */
 export type ParcelError = typeof defaultError;
