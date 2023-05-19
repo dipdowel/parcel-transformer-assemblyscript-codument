@@ -22,7 +22,7 @@ export type Compiled = {
 };
 
 // AssemblyScript Compiler suitable for programmatic usage.
-let asc: ASC | undefined;
+// let asc: ASC | undefined;
 
 /**
  *
@@ -42,9 +42,9 @@ export async function compile(asset: {
   //FIXME: 2. Print a log on every usage to see whether the caching actually makes sense here
 
   //  Load
-  if (!asc) {
-    asc = await loadCompiler();
-  }
+  // if (!asc) {
+  const asc = await loadCompiler();
+  // }
 
   //FIXME: #############################################################################################################
 
