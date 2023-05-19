@@ -7,8 +7,7 @@ import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
-import { compile, Compiled } from "./compile";
-import { CompilationArtifacts } from "./helpers/compilation-artifacts";
+import { compile } from "./compile";
 
 /*
     TODO:  # GENERAL
