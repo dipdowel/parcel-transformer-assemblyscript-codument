@@ -16,6 +16,14 @@ const PREF = "[ASC][COMPILE]";
 // /**  An instance of AssemblyScript Compiler for programmatic usage. */
 let asc: ASC | undefined;
 
+export type Compiled = {
+  invalidateOnFileChange: FilePath[];
+  invalidateOnFileCreate: FileCreateInvalidation[];
+  invalidateOnEnvChange: string[];
+  error: any;
+  compiledResult: CompilationArtifacts;
+};
+
 /**
  * TODO: Write JSDoc!
  * @param asset
@@ -24,16 +32,7 @@ let asc: ASC | undefined;
 export async function compile(asset: {
   filePath: FilePath;
   inputCode: string;
-}): Promise<
-  | undefined
-  | {
-      invalidateOnFileChange: FilePath[];
-      invalidateOnFileCreate: FileCreateInvalidation[];
-      invalidateOnEnvChange: string[];
-      error: any;
-      compiledResult: CompilationArtifacts;
-    }
-> {
+}): Promise<undefined | Compiled> {
   //FIXME: #############################################################################################################
   //FIXME: 1. Extract into a separate function
   //FIXME: 2. Load just once and then mem-cache
@@ -59,29 +58,6 @@ export async function compile(asset: {
   console.log(
     `${PREF} compileAssemblyScript(), absolutePath: ${absolutePath} `
   );
-
-  // /**
-  //  * A collection of all the compilation artifacts that ASC produces + compilation statistics info
-  //  * @type {{[p: string]: null, stats: null}}
-  //  * FIXME: tighten the type! It's clear which fields are binary and which are a `string`!
-  //  */
-  // let compilationArtifacts333: Record<
-  //   ArtifactFileType,
-  //   undefined | string | Buffer
-  // > & {
-  //   stats?: string;
-  // } = {
-  //   [ArtifactFileType.MAP]: undefined,
-  //   [ArtifactFileType.WASM]: undefined,
-  //   [ArtifactFileType.WAT]: undefined,
-  //   [ArtifactFileType.D_TS]: undefined,
-  //   [ArtifactFileType.JS]: undefined,
-  //
-  //   /** A printable string with the statistics of the compilation */
-  //   stats: undefined,
-  // };
-
-  // Record< ArtifactFileType, undefined | string | Buffer > & { stats?: string; } =
 
   /** A collection of all the compilation artifacts that ASC produces + compilation statistics info */
   let compilationArtifacts: Partial<CompilationArtifacts> = {};

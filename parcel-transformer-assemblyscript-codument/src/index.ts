@@ -1,5 +1,3 @@
-// "use strict";
-
 import type { MutableAsset, TransformerResult } from "@parcel/types";
 import { Transformer } from "@parcel/plugin";
 import SourceMap from "@parcel/source-map";
@@ -9,7 +7,7 @@ import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
-import { compile } from "./compile";
+import { compile, Compiled } from "./compile";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 
 /*
@@ -59,19 +57,12 @@ module.exports = new Transformer({
 
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
 
-    // FIXME: this is super ugly and takes too much space. Compress using something like:
-    /*
-    const {
-            compiledResult,
-            invalidateOnFileChange = [],
-            invalidateOnFileCreate = [],
-            invalidateOnEnvChange = [],
-          } = compilationResult ?? {};
-     */
     let compiledResult,
       invalidateOnFileChange,
       invalidateOnFileCreate,
       invalidateOnEnvChange;
+
+    // let compilationResult: Compiled;
 
     try {
       let compilationResult = await compile({
@@ -79,10 +70,13 @@ module.exports = new Transformer({
         inputCode: await asset.getCode(),
       });
 
-      compiledResult = compilationResult?.compiledResult;
-      invalidateOnFileChange = compilationResult?.invalidateOnFileChange;
-      invalidateOnFileCreate = compilationResult?.invalidateOnFileCreate;
-      invalidateOnEnvChange = compilationResult?.invalidateOnEnvChange;
+      compilationResult &&
+        ({
+          compiledResult,
+          invalidateOnFileChange,
+          invalidateOnFileCreate,
+          invalidateOnEnvChange,
+        } = compilationResult);
     } catch (e) {
       throwTransformerError({
         ...defaultError,
