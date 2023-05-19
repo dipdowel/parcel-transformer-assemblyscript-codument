@@ -15,11 +15,11 @@
     "isolatedModules": true,
 
     "types": [/*"jest",*/ "node"],
-    "composite": true,
+    "composite": false,
 
     "target": "es2021",
     "module": "commonjs",
-    "declaration": true,
+    "declaration": false,
     "outDir": "./dist",
     "strict": true
   },
