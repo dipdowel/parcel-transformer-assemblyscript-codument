@@ -80,7 +80,7 @@ module.exports = new Transformer({
     } catch (e) {
       throwTransformerError({
         ...defaultError,
-        message: `${PREF} Could not compile Assembly Script: ${e}`,
+        message: `\nCould not compile Assembly Script\n${e}`,
       });
     }
 

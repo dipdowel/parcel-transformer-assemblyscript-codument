@@ -5,15 +5,15 @@
 export const defaultError = {
   message: "n/a",
   filePath: __filename,
-  detailedMessage: "n/a",
-  start: {
-    line: -1,
-    column: -1,
-  },
-  end: {
-    line: -1,
-    column: -1,
-  },
+  // detailedMessage: "n/a",
+  // start: {
+  //   line: -1,
+  //   column: -1,
+  // },
+  // end: {
+  //   line: -1,
+  //   column: -1,
+  // },
 };
 
 /** FIXME */

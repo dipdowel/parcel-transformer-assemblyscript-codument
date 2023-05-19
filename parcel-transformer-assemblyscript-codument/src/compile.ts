@@ -1,9 +1,9 @@
-import type { FilePath, FileCreateInvalidation } from "@parcel/types";
+import type { FileCreateInvalidation, FilePath } from "@parcel/types";
 
 import path from "path";
-import { ArtifactFileType } from "./artifact-file-type";
-import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
-import { throwTransformerError } from "./helpers/throw-transformer-error";
+
+import { APIResult, loadCompiler } from "./compile/load-compiler";
+
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 
@@ -13,40 +13,33 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
  */
 const PREF = "[ASC][COMPILE]";
 
-// /**  An instance of AssemblyScript Compiler for programmatic usage. */
-let asc: ASC | undefined;
-
+/** TODO: Write JSDoc */
 export type Compiled = {
   invalidateOnFileChange: FilePath[];
   invalidateOnFileCreate: FileCreateInvalidation[];
   invalidateOnEnvChange: string[];
-  error: any;
   compiledResult: CompilationArtifacts;
 };
 
 /**
- * TODO: Write JSDoc!
+ *
  * @param asset
  * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
+ */
+/**
+ * TODO: Write JSDoc!
+ * @param asset
  */
 export async function compile(asset: {
   filePath: FilePath;
   inputCode: string;
-}): Promise<undefined | Compiled> {
+}): Promise<Compiled> {
   //FIXME: #############################################################################################################
-  //FIXME: 1. Extract into a separate function
-  //FIXME: 2. Load just once and then mem-cache
-  //FIXME: 3. Print a log on every usage to see whether the caching actually makes sense here
+  //FIXME: 1. Load just once and then mem-cache
+  //FIXME: 2. Print a log on every usage to see whether the caching actually makes sense here
 
-  const { asc: compiler, error: ascError } = await loadCompiler();
-
-  // FIXME: this is ugly, fix it!
-  asc = compiler;
-
-  if (!asc || ascError) {
-    ascError && throwTransformerError(ascError);
-    return;
-  }
+  //  Load  AssemblyScript Compiler suitable for programmatic usage.
+  const asc = await loadCompiler();
   //FIXME: #############################################################################################################
 
   const { filePath, inputCode /*, readFile */ } = asset;
@@ -108,15 +101,13 @@ export async function compile(asset: {
     }
   );
 
-  let error, stdout, stderr, stats;
-
-  if (result) {
-    error = result.error;
-    stdout = result.stdout;
-    stderr = result.stderr;
+  const {
+    error,
+    stdout,
+    stderr,
     /** @See type `Stats` in https://github.com/AssemblyScript/assemblyscript/blob/main/cli/index.d.ts */
-    stats = result.stats;
-  }
+    stats,
+  } = result;
 
   // [AssemblyScript Compiler] ends
   // -------------------------------------------------------------------------------------------------------------------
@@ -125,8 +116,11 @@ export async function compile(asset: {
   compilationArtifacts.stats = stats?.toString();
 
   if (error) {
-    console.error(`${PREF} Compilation failed: ${error.message}`);
-    console.error(stderr?.toString());
+    // Some formatting for the errors in AssemblyScript code
+    const line = "─".repeat(79);
+    throw new Error(
+      `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`
+    );
   } else {
     console.log(stdout?.toString());
   }
@@ -134,8 +128,8 @@ export async function compile(asset: {
   // #####################################################################################################################
 
   return {
+    // FIXME: rename `compiledResult` -> `compilationArtifacts`
     compiledResult: compilationArtifacts as CompilationArtifacts,
-    error,
     // @ts-ignore
     invalidateOnFileChange: [], // FIXME: Fill in with the filenames ASC tries to read
     // @ts-ignore
