@@ -15,7 +15,6 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 /*
     TODO:  # GENERAL
     TODO: ======================================================================
-    TODO: - Switch TS-compiler to 'strict' and fix-fix-fix!!!
     TODO: - Add a unit-test framework
     TODO: - Start writing unit tests
     TODO: - Pick up FIXMEs and TODOs from around the code every now and then
@@ -28,8 +27,9 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
     TODO: - Add means for reading and parsing the configuration file
     TODO: - Add sensible built-in defaults for all the config keys
     TODO:
-    TODO:  # LOGGING
+    TODO:  # LOGGING / ERROR HANDLING
     TODO: ======================================================================
+    TODO: - Make error handling consistent
     TODO: - Stream all the logging through a custom logger function
     TODO: - Hide all the logging by default
     TODO: - Add a configuration key to enable all the verbose logging
