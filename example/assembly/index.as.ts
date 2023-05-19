@@ -14,5 +14,10 @@ export function add(a: i32, b: i32): i32 {
   console.log("[WASM] Hi there!");
   console.log("[WASM] myNumber: " + myNumber.toString(10));
   console.log("[WASM] myArray: " + myArray.toString());
+
+  // Throw an error on purpose
+  // const ddd: i32;
+  // console.log("[WASM] ddd: " + ddd.toString(10));
+
   return a + b;
 }
