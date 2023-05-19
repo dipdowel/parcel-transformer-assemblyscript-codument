@@ -27,7 +27,7 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
     TODO:
     TODO:  # LOGGING / ERROR HANDLING
     TODO: ======================================================================
-    TODO: - Make error handling consistent
+    TODO: - Improve error reporting as mentioned here: https://github.com/parcel-bundler/parcel/discussions/8964?sort=old#discussioncomment-5952588
     TODO: - Stream all the logging through a custom logger function
     TODO: - Hide all the logging by default
     TODO: - Add a configuration key to enable all the verbose logging
