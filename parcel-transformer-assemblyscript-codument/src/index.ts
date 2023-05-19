@@ -1,5 +1,6 @@
 // "use strict";
 
+import type { MutableAsset, TransformerResult } from "@parcel/types";
 import { Transformer } from "@parcel/plugin";
 import SourceMap from "@parcel/source-map";
 
@@ -9,7 +10,6 @@ import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
 import { compile } from "./compile";
-import { ConfigRequest } from "./parcel-types";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 
 /*
@@ -42,9 +42,11 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 const PREF = "[ASC]";
 
 module.exports = new Transformer({
-  // FIXME: get rid of `ts-ignore`!
-  // @ts-ignore
-  async transform({ asset, logger, options, config }) {
+  async transform({
+    asset,
+    logger,
+    options,
+  }): Promise<(MutableAsset | TransformerResult)[]> {
     //
     // TODO: Come up with a way of passing the ASC logging to Parcel properly, so that Parcel would print the logs
     // TODO: of this transformer properly.
@@ -56,12 +58,6 @@ module.exports = new Transformer({
     //
 
     // FiXME: add `try/catch` around `compileAssemblyScript()`!
-
-    let compilationResult:
-      | undefined
-      | (ConfigRequest & {
-          compiledResult: CompilationArtifacts;
-        });
 
     // FIXME: this is super ugly and takes too much space. Compress using something like:
     /*
@@ -78,7 +74,7 @@ module.exports = new Transformer({
       invalidateOnEnvChange;
 
     try {
-      compilationResult = await compile({
+      let compilationResult = await compile({
         filePath: asset.filePath,
         inputCode: await asset.getCode(),
       });
@@ -92,7 +88,6 @@ module.exports = new Transformer({
         ...defaultError,
         message: `${PREF} Could not compile Assembly Script: ${e}`,
       });
-      return;
     }
 
     if (invalidateOnFileChange) {
@@ -103,9 +98,7 @@ module.exports = new Transformer({
 
     if (invalidateOnFileCreate) {
       for (let file of invalidateOnFileCreate) {
-        // FIXME: There's something fishy here, get rid of `ts-ignore`!
-        // @ts-ignore
-        asset.invalidateOnFileCreate({ filePath: file });
+        asset.invalidateOnFileCreate(file);
       }
     }
 

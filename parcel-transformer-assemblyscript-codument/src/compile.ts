@@ -1,10 +1,11 @@
+import type { FilePath, FileCreateInvalidation } from "@parcel/types";
+
 import path from "path";
 import { ArtifactFileType } from "./artifact-file-type";
 import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
-import { ConfigRequest } from "./parcel-types";
 
 /**
  * Logging prefix
@@ -20,11 +21,18 @@ let asc: ASC | undefined;
  * @param asset
  * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
  */
-export async function compile(asset: any /* FIXME: the type! */): Promise<
+export async function compile(asset: {
+  filePath: FilePath;
+  inputCode: string;
+}): Promise<
   | undefined
-  | (ConfigRequest & {
+  | {
+      invalidateOnFileChange: FilePath[];
+      invalidateOnFileCreate: FileCreateInvalidation[];
+      invalidateOnEnvChange: string[];
+      error: any;
       compiledResult: CompilationArtifacts;
-    })
+    }
 > {
   //FIXME: #############################################################################################################
   //FIXME: 1. Extract into a separate function
