@@ -28,6 +28,8 @@ import { compile } from "./compile";
     TODO: - Create a custom configuration file for this transformer
     TODO: - Add means for reading and parsing the configuration file
     TODO: - Add sensible built-in defaults for all the config keys
+    TODO:   - super-verbose debug output
+    TODO:   - print compilation stats during AS-development
     TODO:
     TODO:  # LOGGING / ERROR HANDLING
     TODO: ======================================================================
