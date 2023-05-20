@@ -20,6 +20,9 @@ import { compile } from "./compile";
     TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
+    TODO: - Differentiate between a 'release' and 'development' build Parcel-wise
+    TODO:   - Configure the AS-compilation accordingly
+    TODO:
     TODO: - Create a custom configuration file for this transformer
     TODO: - Add means for reading and parsing the configuration file
     TODO: - Add sensible built-in defaults for all the config keys
@@ -54,6 +57,8 @@ module.exports = new Transformer({
     // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
     //
 
+    const isDev = options.mode !== "production";
+
     let compilationArtifacts,
       invalidateOnFileChange,
       invalidateOnFileCreate,
@@ -62,10 +67,10 @@ module.exports = new Transformer({
     // let compilationResult: Compiled;
 
     try {
-      let compilationResult = await compile({
-        filePath: asset.filePath,
-        inputCode: await asset.getCode(),
-      });
+      let compilationResult = await compile(
+        { filePath: asset.filePath, inputCode: await asset.getCode() },
+        isDev
+      );
 
       compilationResult &&
         ({
@@ -146,22 +151,24 @@ module.exports = new Transformer({
 
     // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 
-    const ascMap = JSON.parse(
-      compilationArtifacts?.[ArtifactFileType.MAP] as string
-    );
+    const result = {
+      type: "wasm",
+      content: compilationArtifacts?.[ArtifactFileType.WASM],
+      uniqueKey: "output.wasm",
+      // map: wasmSourceMap,
+    };
 
-    const wasmSourceMap = new SourceMap(options.projectRoot);
-    wasmSourceMap.addVLQMap(ascMap);
+    const maps = compilationArtifacts?.[ArtifactFileType.MAP] as string;
 
-    return [
-      asset,
-      {
-        type: "wasm",
-        content: compilationArtifacts?.[ArtifactFileType.WASM],
-        uniqueKey: "output.wasm",
-        map: wasmSourceMap,
-      },
-    ];
+    if (maps && isDev) {
+      const ascMap = JSON.parse(maps);
+      const wasmSourceMap = new SourceMap(options.projectRoot);
+      wasmSourceMap.addVLQMap(ascMap);
+      // @ts-ignore
+      result["maps"] = wasmSourceMap;
+    }
+
+    return [asset, result];
   },
 });
 

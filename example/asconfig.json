@@ -1,19 +1,20 @@
 {
   "targets": {
     "debug": {
-      "outFile": "build/debug.wasm",
-      "textFile": "build/debug.wat",
+      "outFile": "build/output.wasm",
+      "textFile": "build/output.wat",
       "sourceMap": "output.wasm.map",
+      "shrinkLevel": 0,
       "debug": true
     },
     "release": {
-      "outFile": "build/release.wasm",
-      "textFile": "build/release.wat",
-      "sourceMap": "output.wasm.map",
+      "outFile": "build/output.wasm",
+      "sourceMap": false,
       "optimizeLevel": 3,
-      "shrinkLevel": 0,
+      "shrinkLevel": 2,
       "converge": false,
-      "noAssert": false
+      "noAssert": false,
+      "debug": false
     }
   },
   "options": {

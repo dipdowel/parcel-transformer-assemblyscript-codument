@@ -21,23 +21,20 @@ export type Compiled = {
 };
 
 // AssemblyScript Compiler suitable for programmatic usage.
-// Keeping it as a global variable allows caching in order to avoid reloading the compiler every time
+// Keeping it as a global variable allows caching in order to avoid reloading the compiler on every compilation
 let asc: ASC | undefined;
 
 /**
- *
- * @param asset
- * @return {Promise<{wasmResult: string, invalidateOnFileChange: *[], invalidateOnEnvChange: *[], error: *, jsResult: string, invalidateOnFileCreate: *[]}>}
- */
-/**
  * TODO: Write JSDoc!
  * @param asset
+ * @param isDev
  */
-export async function compile(asset: {
-  filePath: FilePath;
-  inputCode: string;
-}): Promise<Compiled> {
+export async function compile(
+  asset: { filePath: FilePath; inputCode: string },
+  isDev: boolean
+): Promise<Compiled> {
   // console.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
+  console.log(`>>>>>>> isDev? ${isDev}`);
 
   // If ASC hasn't been cached yet, load and cache it.
   if (!asc) {
@@ -61,54 +58,50 @@ export async function compile(asset: {
   // All the files referenced in AssemblyScript code
   const filesToWatch: string[] = [];
 
-  const result: APIResult = await asc.main(
-    [
-      /* Command line options */
-      absolutePath,
-      "--outFile",
-      "output.wasm", // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
-      "--debug", // FIXME: enable/disable debug mode depending on the Parcel mode: "development" or "production".
-      // "--optimize",
-      // "--sourceMap",
-      // "/output.wasm.map",
-      // "--stats",
-    ],
-    {
-      /* Additional API options */
-      // stdout: io.stdout,
-      // stderr: (e, e2) => console.log(new Error(e + " :: " + e2)),
+  // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
+  const cliArgs = [absolutePath, "--outFile", "output.wasm"]; // "--optimize", "--sourceMap", "/output.wasm.map", "--stats",
 
-      /**
-       * Here we hook into how ASC reads files from the file system,
-       * and execute our custom file reading logic
-       * @See `ascIO.read()`
-       */
-      readFile: (absolutePath: string, baseDir: string = "./assembly/") => {
-        // We want to watch all the files except the configuration
-        !absolutePath.includes(`asconfig.json`) &&
-          filesToWatch.push(`./assembly/${absolutePath}`);
+  // Build the WASM module in debug mode if Parcel is in 'development' mode
+  if (isDev) {
+    cliArgs.push("--debug");
+    cliArgs.push("--target");
+    cliArgs.push("debug");
+  } else {
+    cliArgs.push("--target");
+    cliArgs.push("release");
+  }
 
-        return read(inputCode, absolutePath, baseDir);
-      },
+  const result: APIResult = await asc.main(cliArgs, {
+    /**
+     * Here we hook into how ASC reads files from the file system,
+     * and execute our custom file reading logic
+     * @See `ascIO.read()`
+     */
+    readFile: (absolutePath: string, baseDir: string = "./assembly/") => {
+      // We want to watch all the files except the configuration
+      !absolutePath.includes(`asconfig.json`) &&
+        filesToWatch.push(`./assembly/${absolutePath}`);
 
-      /**
-       * Here we hook into how ASC writes files to the file system,
-       * and execute our custom logic of writing to a file.
-       * @See `ascIO.write()`
-       */
-      writeFile: (
-        filename: string,
-        contents: string | Buffer | Uint8Array /*Uint8Array*/,
-        baseDir: string
-      ) =>
-        write(
-          compilationArtifacts as CompilationArtifacts,
-          filename,
-          contents,
-          baseDir
-        ),
-    }
-  );
+      return read(inputCode, absolutePath, baseDir);
+    },
+
+    /**
+     * Here we hook into how ASC writes files to the file system,
+     * and execute our custom logic of writing to a file.
+     * @See `ascIO.write()`
+     */
+    writeFile: (
+      filename: string,
+      contents: string | Buffer | Uint8Array,
+      baseDir: string
+    ) =>
+      write(
+        compilationArtifacts as CompilationArtifacts,
+        filename,
+        contents,
+        baseDir
+      ),
+  });
 
   const {
     error,
