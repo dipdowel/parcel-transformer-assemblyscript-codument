@@ -18,6 +18,7 @@ import { compile } from "./compile";
     TODO: - Make sure JSDoc is in order, we need a 100% doc coverage!
     TODO: - Consider committing `dist` since it's going to be an NPM package (double check!)
     TODO: - Apply licence as explained in file `LICENSE`
+    TODO: - Update and improve all the README files. Onboarding for a developer should have clear steps to follow.
     TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
