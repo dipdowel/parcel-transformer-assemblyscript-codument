@@ -17,6 +17,7 @@ import { compile } from "./compile";
     TODO: - Pick up FIXMEs and TODOs from around the code every now and then
     TODO: - Make sure JSDoc is in order, we need a 100% doc coverage!
     TODO: - Consider committing `dist` since it's going to be an NPM package (double check!)
+    TODO: - See whether it's possible to
     TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
