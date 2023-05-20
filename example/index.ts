@@ -1,7 +1,7 @@
 // @ts-ignore
 import { initWasm } from "./assembly/index.as";
 
-import { WasmModule } from "./WasmModule";
+import { WasmModule } from "./wasm-module";
 
 (async () => {
   try {
