@@ -16,7 +16,6 @@ If you want to suggest an improvement, please [fork](https://github.com/dipdowel
 ## `./parcel-transformer-assemblyscript-codument`
 - There's another README in this directory
 - TODO: explain what's in that folder
-- Convert the transformer code to TypeScript!
 
 ## `./example`
 - TODO: explain what's in that folder
