@@ -141,7 +141,7 @@ export function read(inputCode: string, filename: string, baseDir: string) {
   } catch (err) {
     const msg = `${PREF_READ} Error reading ${absolutePath} :: ${err}`;
     console.error(msg);
-    throw new Error(msg); // Should I`throw` here or just call `console.error()`?
+    throw new Error(msg);
   }
   // FIXME: Do we want this function to be async after all?
   // return new Promise((resolve) => {

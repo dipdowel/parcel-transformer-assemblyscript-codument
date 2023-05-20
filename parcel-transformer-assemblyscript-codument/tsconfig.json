@@ -5,7 +5,7 @@
     "skipLibCheck": true,
     "allowJs": true,
     "checkJs": false,
-    "incremental": true,
+    "incremental": false,
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "moduleResolution": "NodeNext",

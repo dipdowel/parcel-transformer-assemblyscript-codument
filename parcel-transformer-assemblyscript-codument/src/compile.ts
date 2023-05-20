@@ -13,7 +13,6 @@ import { CompilationArtifacts } from "./helpers/compilation-artifacts";
  */
 const PREF = "[ASC][COMPILE]";
 
-/** TODO: Write JSDoc */
 export type Compiled = {
   invalidateOnFileChange: FilePath[];
   invalidateOnFileCreate: FileCreateInvalidation[];
@@ -22,7 +21,8 @@ export type Compiled = {
 };
 
 // AssemblyScript Compiler suitable for programmatic usage.
-// let asc: ASC | undefined;
+// Keeping it as a global variable allows caching in order to avoid reloading the compiler every time
+let asc: ASC | undefined;
 
 /**
  *
@@ -37,20 +37,14 @@ export async function compile(asset: {
   filePath: FilePath;
   inputCode: string;
 }): Promise<Compiled> {
-  //FIXME: #############################################################################################################
-  //FIXME: 1. Load just once and then mem-cache
-  //FIXME: 2. Print a log on every usage to see whether the caching actually makes sense here
+  // console.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
 
-  //  Load
-  // if (!asc) {
-  const asc = await loadCompiler();
-  // }
-
-  //FIXME: #############################################################################################################
+  // If ASC hasn't been cached yet, load and cache it.
+  if (!asc) {
+    asc = await loadCompiler();
+  }
 
   const { filePath, inputCode /*, readFile */ } = asset;
-  // console.log(`>>> compileAssemblyScript(), filePath: ${filePath}`);
-  // console.log(`>>> compileAssemblyScript(), inputCode: ${inputCode}`);
 
   const absolutePath = path.basename(filePath);
 
@@ -63,6 +57,10 @@ export async function compile(asset: {
 
   // -------------------------------------------------------------------------------------------------------------------
   // [AssemblyScript Compiler] starts
+
+  // All the files referenced in AssemblyScript code
+  const filesToWatch: string[] = [];
+
   const result: APIResult = await asc.main(
     [
       /* Command line options */
@@ -85,8 +83,13 @@ export async function compile(asset: {
        * and execute our custom file reading logic
        * @See `ascIO.read()`
        */
-      readFile: (absolutePath: string, baseDir: string = "./assembly/") =>
-        read(inputCode, absolutePath, baseDir),
+      readFile: (absolutePath: string, baseDir: string = "./assembly/") => {
+        // We want to watch all the files except the configuration
+        !absolutePath.includes(`asconfig.json`) &&
+          filesToWatch.push(`./assembly/${absolutePath}`);
+
+        return read(inputCode, absolutePath, baseDir);
+      },
 
       /**
        * Here we hook into how ASC writes files to the file system,
@@ -131,19 +134,10 @@ export async function compile(asset: {
     console.log(stdout?.toString());
   }
 
-  // #####################################################################################################################
-
   return {
     compilationArtifacts: compilationArtifacts as CompilationArtifacts,
-    // @ts-ignore
-    invalidateOnFileChange: [
-      "./assembly/index.as.ts",
-      "./assembly/package1/sub-package-1/helper.ts",
-      "./assembly/data.ts",
-    ], // FIXME: Fill in with the filenames ASC tries to read
-    // @ts-ignore
-    invalidateOnFileCreate: [], // FIXME: Fill in with the filenames created before that ASC sees for the second or a later time (Is it really so?)
-    // @ts-ignore
-    invalidateOnEnvChange: [], // FIXME: How do I fill in this one?
+    invalidateOnFileChange: filesToWatch,
+    invalidateOnFileCreate: [],
+    invalidateOnEnvChange: [],
   };
 }

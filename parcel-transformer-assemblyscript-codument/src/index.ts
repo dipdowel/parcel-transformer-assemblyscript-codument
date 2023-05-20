@@ -164,3 +164,5 @@ module.exports = new Transformer({
     ];
   },
 });
+
+// https://github.com/AssemblyScript/assemblyscript/pull/2157
