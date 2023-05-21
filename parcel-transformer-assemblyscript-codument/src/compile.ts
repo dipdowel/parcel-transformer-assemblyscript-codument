@@ -55,7 +55,6 @@ export async function compile(
 
   // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
   const cliArgs = [absolutePath, "--outFile", "output.wasm"]; // "--optimize", "--sourceMap", "/output.wasm.map", "--stats",
-  // const cliArgs = [absolutePath];
 
   // Build the WASM module in debug mode if Parcel is in 'development' mode
   if (isDev) {

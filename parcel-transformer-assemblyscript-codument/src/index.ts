@@ -82,8 +82,6 @@ module.exports = new Transformer({
       invalidateOnFileCreate,
       invalidateOnEnvChange;
 
-    // let compilationResult: Compiled;
-
     try {
       let compilationResult = await compile(
         { filePath: asset.filePath, inputCode: await asset.getCode() },

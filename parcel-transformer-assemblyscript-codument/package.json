@@ -22,9 +22,9 @@
     "@parcel/diagnostic": "^2.8.3",
     "@parcel/plugin": "^2.8.3",
     "@types/node": "^20.1.7",
+    "rimraf": "^5.0.0",
     "typescript": "^5.0.4",
-    "wabt": "^1.0.24",
-    "rimraf": "^5.0.0"
+    "wabt": "^1.0.24"
   },
   "engines": {
     "node": ">=12",
