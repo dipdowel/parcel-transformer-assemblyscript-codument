@@ -6,6 +6,7 @@ const PREF = "[ASC][LOAD]";
 
 /** AssemblyScript Compiler type, as defined in `assemblyscript` package */
 export type ASC = typeof Compiler;
+
 /** AssemblyScript Compiler Options type, as defined in `assemblyscript` package */
 export type ASCOptions = typeof Options;
 

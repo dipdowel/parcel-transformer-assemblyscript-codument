@@ -15,3 +15,4 @@
 /parcel-transformer-assemblyscript-codument/node_modules/.bin/
 /parcel-transformer-assemblyscript-codument/tsconfig.tsbuildinfo
 /parcel-transformer-assemblyscript-codument/dist/
+/example/yarn-error.log

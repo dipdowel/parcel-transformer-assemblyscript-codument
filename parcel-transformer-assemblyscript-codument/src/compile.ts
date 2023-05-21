@@ -7,12 +7,10 @@ import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 
-/**
- * Logging prefix
- * @type {string}
- */
+/** Logging prefix */
 const PREF = "[ASC][COMPILE]";
 
+/** Descriptor of the compilation result */
 export type Compiled = {
   invalidateOnFileChange: FilePath[];
   invalidateOnFileCreate: FileCreateInvalidation[];
@@ -25,7 +23,7 @@ export type Compiled = {
 let asc: ASC | undefined;
 
 /**
- * TODO: Write JSDoc!
+ * Configures and performs a call to AssemblyScript compiler
  * @param asset
  * @param isDev
  */
@@ -34,7 +32,8 @@ export async function compile(
   isDev: boolean
 ): Promise<Compiled> {
   // console.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
-  console.log(`>>>>>>> isDev? ${isDev}`);
+
+  console.log(`${PREF} is development build?: ${isDev} `);
 
   // If ASC hasn't been cached yet, load and cache it.
   if (!asc) {
@@ -42,24 +41,21 @@ export async function compile(
   }
 
   const { filePath, inputCode /*, readFile */ } = asset;
-
   const absolutePath = path.basename(filePath);
-
-  console.log(
-    `${PREF} compileAssemblyScript(), absolutePath: ${absolutePath} `
-  );
 
   /** A collection of all the compilation artifacts that ASC produces + compilation statistics info */
   let compilationArtifacts: Partial<CompilationArtifacts> = {};
 
-  // -------------------------------------------------------------------------------------------------------------------
+  // ===================================================================================================================
   // [AssemblyScript Compiler] starts
 
-  // All the files referenced in AssemblyScript code
+  // A collection of all the file names referenced in AssemblyScript code.
+  // Those files need to be watched by Parcel.
   const filesToWatch: string[] = [];
 
   // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
   const cliArgs = [absolutePath, "--outFile", "output.wasm"]; // "--optimize", "--sourceMap", "/output.wasm.map", "--stats",
+  // const cliArgs = [absolutePath];
 
   // Build the WASM module in debug mode if Parcel is in 'development' mode
   if (isDev) {
@@ -71,37 +67,44 @@ export async function compile(
     cliArgs.push("release");
   }
 
-  const result: APIResult = await asc.main(cliArgs, {
-    /**
-     * Here we hook into how ASC reads files from the file system,
-     * and execute our custom file reading logic
-     * @See `ascIO.read()`
-     */
-    readFile: (absolutePath: string, baseDir: string = "./assembly/") => {
-      // We want to watch all the files except the configuration
-      !absolutePath.includes(`asconfig.json`) &&
-        filesToWatch.push(`./assembly/${absolutePath}`);
+  /** Set up of I/O middleware functions and other compiler API options  */
+  const apiOptions = {
+    /** @See `read()` in `./compile/io` */
+    readFile: (filename: string) => {
+      const assemblyDir = "./assembly";
+      const filePath = path.join(assemblyDir, filename);
 
-      return read(inputCode, absolutePath, baseDir);
+      // We want to watch all the files except the configuration
+      !filename.includes(`asconfig.json`) && filesToWatch.push(filePath);
+      return read(inputCode, filename, assemblyDir);
     },
 
-    /**
-     * Here we hook into how ASC writes files to the file system,
-     * and execute our custom logic of writing to a file.
-     * @See `ascIO.write()`
-     */
+    /** @See `write()` in `./compile/io` */
     writeFile: (
       filename: string,
       contents: string | Buffer | Uint8Array,
       baseDir: string
-    ) =>
-      write(
+    ) => {
+      // Handle the case of `"sourceMap": false,` and similar in `asconfig.json`
+      if (!filename || filename.trim().toLowerCase() === "false") {
+        return;
+      }
+
+      return write(
         compilationArtifacts as CompilationArtifacts,
         filename,
         contents,
         baseDir
-      ),
-  });
+      );
+    },
+
+    // reportDiagnostic: (diagnostic: any) => {
+    //   TODO: Implement a more Parcel-idiomatic handling of errors in AssemblyScript
+    //   console.log(`ASC, reportDiagnostic(): ${JSON.stringify(diagnostic)}`);
+    // },
+  };
+
+  const result: APIResult = await asc.main(cliArgs, apiOptions);
 
   const {
     error,
@@ -112,7 +115,7 @@ export async function compile(
   } = result;
 
   // [AssemblyScript Compiler] ends
-  // -------------------------------------------------------------------------------------------------------------------
+  // ===================================================================================================================
 
   // Store the log-friendly string representation of the compilation statistics
   compilationArtifacts.stats = stats?.toString();

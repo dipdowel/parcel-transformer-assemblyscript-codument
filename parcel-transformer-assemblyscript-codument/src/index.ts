@@ -20,8 +20,22 @@ import { compile } from "./compile";
     TODO: - Apply licence as explained in file `LICENSE`
     TODO: - Update and improve all the README files. Onboarding for a developer should have clear steps to follow.
     TODO:
+    TODO: - What happens if there is more than one *.as.ts file? Will it all crash?
+    TODO: - Can we narrow down glob to just `index.as.ts`?
+    TODO:
+    TODO:
+    TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
+    TODO: -
+    TODO: -
+    TODO: -  Implement the idea of having a default asconfig provided by the transformer.
+    TODO: -  If there's a custom asconfig file present, then use that one
+    TODO: -  explain in the readme that all the file names in asconfig should not be used
+    TODO: - throw out file-related keys from the config read from the user's directory. just keep the source maps, but handle them to be boolean
+
+    TODO: -
+    TODO: -
     TODO: - Differentiate between a 'release' and 'development' build Parcel-wise
     TODO:   - Configure the AS-compilation accordingly
     TODO:
@@ -58,7 +72,7 @@ module.exports = new Transformer({
     //
     // TODO: Come up with the setting to switch verbose logging on/off
     //
-    // TODO: NB: At this stage of development use `yarn build:web |cat` to see all the logs, etc.
+    // TODO: NB: At this stage of development use `yarn web:build |cat` to see all the logs, etc.
     //
 
     const isDev = options.mode !== "production";
