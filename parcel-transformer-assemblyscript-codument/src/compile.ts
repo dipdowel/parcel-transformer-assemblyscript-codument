@@ -6,6 +6,7 @@ import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
 
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
+import { dbg } from "./dbg";
 
 /** Logging prefix */
 const PREF = "[ASC][COMPILE]";
@@ -31,9 +32,9 @@ export async function compile(
   asset: { filePath: FilePath; inputCode: string },
   isDev: boolean
 ): Promise<Compiled> {
-  // console.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
+  // logger.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
 
-  console.log(`${PREF} is development build?: ${isDev} `);
+  dbg.log(`${PREF} is development build?: ${isDev} `);
 
   // If ASC hasn't been cached yet, load and cache it.
   if (!asc) {
@@ -53,7 +54,6 @@ export async function compile(
   // Those files need to be watched by Parcel.
   const filesToWatch: string[] = [];
 
-  // FIXME: See whether it's better to use `asconfig.json` to define the WASM file name
   const cliArgs = [absolutePath, "--outFile", "output.wasm"]; // "--optimize", "--sourceMap", "/output.wasm.map", "--stats",
 
   // Build the WASM module in debug mode if Parcel is in 'development' mode
@@ -99,7 +99,7 @@ export async function compile(
 
     // reportDiagnostic: (diagnostic: any) => {
     //   TODO: Implement a more Parcel-idiomatic handling of errors in AssemblyScript
-    //   console.log(`ASC, reportDiagnostic(): ${JSON.stringify(diagnostic)}`);
+    //   logger.log(`ASC, reportDiagnostic(): ${JSON.stringify(diagnostic)}`);
     // },
   };
 
@@ -126,7 +126,7 @@ export async function compile(
       `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`
     );
   } else {
-    console.log(stdout?.toString());
+    dbg.log(stdout?.toString());
   }
 
   return {

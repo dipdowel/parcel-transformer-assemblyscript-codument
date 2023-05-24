@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { dbg } from "../dbg";
 
 const PREF = "[ASC][WDF]";
 
@@ -9,7 +10,7 @@ const PREF = "[ASC][WDF]";
  */
 export function writeDeclarationFile(content: string) {
   if (!content) {
-    console.error(`${PREF} '.d.ts' has no content!`);
+    dbg.error(`${PREF} '.d.ts' has no content!`);
     return;
   }
   const fileName = `./assembly/../wasm-module.d.ts`;
@@ -20,8 +21,8 @@ export function writeDeclarationFile(content: string) {
 
   try {
     fs.writeFileSync(fileName, declarationFileContent);
-    console.log(`${PREF} '.d.ts' file written successfully!`);
+    dbg.log(`${PREF} '.d.ts' file written successfully!`);
   } catch (error) {
-    console.error(`${PREF} Error writing to file: ${error}`);
+    dbg.error(`${PREF} Error writing to file: ${error}`);
   }
 }

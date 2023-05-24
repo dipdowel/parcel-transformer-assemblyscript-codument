@@ -1,13 +1,14 @@
 import type { MutableAsset, TransformerResult } from "@parcel/types";
 import { Transformer } from "@parcel/plugin";
 import SourceMap from "@parcel/source-map";
-
 import { ArtifactFileType } from "./artifact-file-type";
 import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
 import { throwTransformerError } from "./helpers/throw-transformer-error";
 import { defaultError } from "./default-error";
 import { compile } from "./compile";
+import { dbg } from "./dbg";
+import { loadTransformerConfig } from "./load-transformer-config";
 
 /*
     TODO:  # GENERAL
@@ -23,34 +24,16 @@ import { compile } from "./compile";
     TODO: - What happens if there is more than one *.as.ts file? Will it all crash?
     TODO: - Can we narrow down glob to just `index.as.ts`?
     TODO:
-    TODO:
-    TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
     TODO: -
-    TODO: -
-    TODO: -  Implement the idea of having a default asconfig provided by the transformer.
-    TODO: -  If there's a custom asconfig file present, then use that one
     TODO: -  explain in the readme that all the file names in asconfig should not be used
     TODO: - throw out file-related keys from the config read from the user's directory. just keep the source maps, but handle them to be boolean
 
-    TODO: -
-    TODO: -
-    TODO: - Differentiate between a 'release' and 'development' build Parcel-wise
-    TODO:   - Configure the AS-compilation accordingly
-    TODO:
-    TODO: - Create a custom configuration file for this transformer
-    TODO: - Add means for reading and parsing the configuration file
-    TODO: - Add sensible built-in defaults for all the config keys
-    TODO:   - super-verbose debug output
-    TODO:   - print compilation stats during AS-development
-    TODO:
     TODO:  # LOGGING / ERROR HANDLING
     TODO: ======================================================================
     TODO: - Improve error reporting as mentioned here: https://github.com/parcel-bundler/parcel/discussions/8964?sort=old#discussioncomment-5952588
-    TODO: - Stream all the logging through a custom logger function
-    TODO: - Hide all the logging by default
-    TODO: - Add a configuration key to enable all the verbose logging
+
  */
 
 /**
@@ -60,22 +43,18 @@ import { compile } from "./compile";
 const PREF = "[ASC]";
 
 module.exports = new Transformer({
+  async loadConfig({ config }) {
+    return await loadTransformerConfig(config);
+  },
   async transform({
     asset,
     logger,
     options,
+    config,
   }): Promise<(MutableAsset | TransformerResult)[]> {
-    //
-    // TODO: Come up with a way of passing the ASC logging to Parcel properly, so that Parcel would print the logs
-    // TODO: of this transformer properly.
-    // TODO: Try using `logger`, maybe? :P
-    //
-    // TODO: Come up with the setting to switch verbose logging on/off
-    //
-    // TODO: NB: At this stage of development use `yarn web:build |cat` to see all the logs, etc.
-    //
-
     const isDev = options.mode !== "production";
+
+    dbg.setEnabled(config?.enableConsoleLogs);
 
     let compilationArtifacts,
       invalidateOnFileChange,
@@ -132,28 +111,29 @@ module.exports = new Transformer({
 
     asset.setMap(new SourceMap(options.projectRoot));
 
-    console.log(
+    dbg.log(
       `${PREF} Compiled WASM module size: ${
         compilationArtifacts?.[ArtifactFileType.WASM]?.length
       }`
     );
 
     //NB: this is the preferred way of logging things via Parcel
-    logger.verbose({
-      origin: "[ASC]",
-      name: "n/a",
-      message: `# Compiled WASM module size: ${
-        compilationArtifacts?.[ArtifactFileType.WASM]?.length
-      }`,
-    });
+    // logger.verbose({
+    //   origin: "[ASC]",
+    //   name: "n/a",
+    //   message: `# Compiled WASM module size: ${
+    //     compilationArtifacts?.[ArtifactFileType.WASM]?.length
+    //   }`,
+    // });
 
-    console.log(`${PREF} Stats:\n${compilationArtifacts?.stats}`);
+    config?.displayStats &&
+      console.log(`${PREF} Stats:\n${compilationArtifacts?.stats}`);
 
     //  Print raw WASM module, which is a `Uint8Array` instance
-    // console.log(compiledResult[ArtifactFileType.WASM]);
+    // dbg.log(compiledResult[ArtifactFileType.WASM]);
 
     // Print the JavaScript compilation artifact
-    // console.log(`${PREF} JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
+    // dbg.log(`${PREF} JS :\n\n${compiledResult[ArtifactFileType.JS]}\n\n\n`);
 
     // const content = fs.readFileSync(absolutePath, "utf8");
 
@@ -163,7 +143,7 @@ module.exports = new Transformer({
     );
 
     // Print the MAP compilation artifact
-    // console.log(`${PREF} MAP :\n\n${compiledResult[ArtifactFileType.MAP]}\n\n\n`);
+    // dbg.log(`${PREF} MAP :\n\n${compiledResult[ArtifactFileType.MAP]}\n\n\n`);
 
     // fs.writeFileSync("output.wasm.map", compiledResult[ArtifactFileType.MAP]);
 

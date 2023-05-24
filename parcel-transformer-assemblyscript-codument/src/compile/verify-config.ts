@@ -26,8 +26,6 @@ function getConfigError(): Error {
 export function verifyConfig(configJson: string): string | null {
   const config: AcceptedConfig = JSON.parse(configJson);
 
-  console.log(`>>> VERIFY config: ${JSON.stringify(config, null, 4)}`);
-
   const { targets, options } = config;
 
   // Parcel can only work with the "raw" bindings, not with "esm".

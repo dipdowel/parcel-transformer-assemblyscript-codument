@@ -23,6 +23,7 @@ Does the same as `"build"` + copies the entire package together with the compile
 6. Explain where to find the `.d.ts` file for accessing WASM modules in TypeScript
 7. Explain the difference between a development build and a release/production build
 8. Explain how to pass CLI options to AssemblyScript Compiler
+9. Explain `as-codument-config.json`
 
 ## Contributors
 - Idea and the AssemblyScript part of the deal: [@dipdopwel](https://github.com/dipdowel)

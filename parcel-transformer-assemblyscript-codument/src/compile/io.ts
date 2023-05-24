@@ -4,6 +4,7 @@ import * as path from "path";
 
 import * as defaultASConfig from "../asconfig.default.json";
 import { verifyConfig } from "./verify-config";
+import { dbg } from "../dbg";
 
 /**
  * A collection of middleware functions.
@@ -46,10 +47,10 @@ export function write(
 ): void {
   const filePath = path.join(baseDir, filename);
 
-  // console.log(`>>>>>>>>>> filename : ${JSON.stringify(filename)}`);
+  // logger.log(`>>>>>>>>>> filename : ${JSON.stringify(filename)}`);
 
   contents &&
-    console.log(
+    dbg.log(
       `${PREF_WRITE} ${filePath} `.padEnd(DOT_PADDING, ".") +
         ` ${contents.length} bytes`
     );
@@ -75,7 +76,7 @@ export function write(
       compilationArtifacts[ArtifactFileType.JS] = contents;
       break;
     default:
-      console.warn(`${PREF_WRITE} Unknown file format: ${filename}`);
+      dbg.warn(`${PREF_WRITE} Unknown file format: ${filename}`);
   }
 }
 
@@ -104,7 +105,7 @@ export function read(
 
   // return cached AssemblyScript config file if requested *and* previously cached
   if (isConfigFile && asconfigCache) {
-    console.log(
+    dbg.log(
       `${PREF_READ} ${filePath} `.padEnd(DOT_PADDING, ".") +
         ` ${asconfigCache.length} bytes [CACHED]`
     );
@@ -116,7 +117,7 @@ export function read(
   try {
     content = fs.readFileSync(filePath, "utf8");
     if (isConfigFile) {
-      console.log(`[AS-CONF] User's 'asconfig.json' loaded...`);
+      dbg.log(`[AS-CONF] User's 'asconfig.json' loaded...`);
     }
   } catch (err) {
     if (!isConfigFile) {
@@ -127,7 +128,7 @@ export function read(
       //  a missing configuration file is a valid case.
       //  In such case we use the default configuration instead.
       content = JSON.stringify(defaultASConfig);
-      console.log(`[AS-CONF] Default asconfig.json used...`);
+      dbg.log(`[AS-CONF] Default asconfig.json used...`);
     }
   }
 
@@ -139,13 +140,13 @@ export function read(
   if (isConfigFile) {
     // Cache AssemblyScript config file
     asconfigCache = content;
-    console.log(
+    dbg.log(
       `[ASC] 📦 Cached ${filePath} `.padEnd(DOT_PADDING, ".") +
         ` ${content.length} bytes`
     );
   }
 
-  console.log(
+  dbg.log(
     `${PREF_READ} ${filePath} `.padEnd(DOT_PADDING, ".") +
       ` ${content.length} bytes`
   );
