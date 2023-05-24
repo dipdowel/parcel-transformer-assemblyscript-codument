@@ -1,0 +1,20 @@
+{
+  "targets": {
+    "debug": {
+      "sourceMap": true,
+      "shrinkLevel": 0,
+      "debug": true
+    },
+    "release": {
+      "sourceMap": false,
+      "optimizeLevel": 3,
+      "shrinkLevel": 2,
+      "converge": false,
+      "noAssert": false,
+      "debug": false
+    }
+  },
+  "options": {
+    "bindings": "raw"
+  }
+}

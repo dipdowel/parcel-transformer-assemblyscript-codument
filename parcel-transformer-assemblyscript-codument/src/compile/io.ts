@@ -2,6 +2,9 @@ import { ArtifactFileType } from "../artifact-file-type";
 import * as fs from "fs";
 import * as path from "path";
 
+import * as defaultASConfig from "../asconfig.default.json";
+import { verifyConfig } from "./verify-config";
+
 /**
  * A collection of middleware functions.
  * The functions are used to hook into AssemblyScript Compiler input/output.
@@ -43,7 +46,7 @@ export function write(
 ): void {
   const filePath = path.join(baseDir, filename);
 
-  console.log(`>>>>>>>>>> filename : ${JSON.stringify(filename)}`);
+  // console.log(`>>>>>>>>>> filename : ${JSON.stringify(filename)}`);
 
   contents &&
     console.log(
@@ -113,9 +116,20 @@ export function read(
   try {
     content = fs.readFileSync(filePath, "utf8");
   } catch (err) {
-    const msg = `${PREF_READ} Error reading ${filePath} :: ${err}`;
-    console.error(msg);
-    throw new Error(msg);
+    if (!isConfigFile) {
+      //  a missing non-configuration file is a problem
+      const msg = `${PREF_READ} Error reading ${filePath} :: ${err}`;
+      throw new Error(msg);
+    } else {
+      //  a missing configuration file is a valid case.
+      //  In such case we use the default configuration instead.
+      content = JSON.stringify(defaultASConfig);
+    }
+  }
+
+  if (isConfigFile) {
+    // User config may need to be modified or completely replaced by the default one
+    content = verifyConfig(content) || JSON.stringify(defaultASConfig);
   }
 
   if (isConfigFile) {

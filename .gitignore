@@ -11,8 +11,13 @@
 /example/node_modules/parcel-transformer-assemblyscript-codument/
 /example/**/*.js.map
 
+
+
 /parcel-transformer-assemblyscript-codument/node_modules/
 /parcel-transformer-assemblyscript-codument/node_modules/.bin/
 /parcel-transformer-assemblyscript-codument/tsconfig.tsbuildinfo
 /parcel-transformer-assemblyscript-codument/dist/
 /example/yarn-error.log
+
+/parcel-packager-wasm/node_modules/
+/parcel-packager-wasm/node_modules/.bin/
