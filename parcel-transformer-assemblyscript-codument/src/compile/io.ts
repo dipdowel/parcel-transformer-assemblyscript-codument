@@ -115,6 +115,9 @@ export function read(
 
   try {
     content = fs.readFileSync(filePath, "utf8");
+    if (isConfigFile) {
+      console.log(`[AS-CONF] User's 'asconfig.json' loaded...`);
+    }
   } catch (err) {
     if (!isConfigFile) {
       //  a missing non-configuration file is a problem
@@ -124,6 +127,7 @@ export function read(
       //  a missing configuration file is a valid case.
       //  In such case we use the default configuration instead.
       content = JSON.stringify(defaultASConfig);
+      console.log(`[AS-CONF] Default asconfig.json used...`);
     }
   }
 
