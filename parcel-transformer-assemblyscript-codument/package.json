@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "clean:dist": "rimraf dist/*",
     "clean:incremental": "rimraf tsconfig.tsbuildinfo",
