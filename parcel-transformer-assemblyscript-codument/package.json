@@ -14,8 +14,8 @@
     "build": "yarn clean && tsc",
     "build-old": "yarn clean && tsc && git add ./dist",
     "start": "echo && echo !!! NOT USED !!! && echo ##yarn clean:dist && ts-node src/index.ts",
+    "test": "mocha --require ts-node/register 'src/**/*.test.ts'",
     "go": "yarn build && yarn copy-to-example",
-    "test": "mocha --require ts-node/register 'src/**/*.test.ts'"
   },
   "dependencies": {
     "assemblyscript": "^0.27.5"
