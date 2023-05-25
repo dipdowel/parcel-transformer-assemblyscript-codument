@@ -14,7 +14,7 @@
     "rootDir": "src",
     "isolatedModules": true,
 
-    "types": [/*"jest",*/ "node"],
+    "types": ["mocha", "chai", "node"],
     "composite": false,
 
     "target": "es2021",
