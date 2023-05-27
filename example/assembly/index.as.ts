@@ -17,7 +17,6 @@ export function add(a: i32, b: i32): i32 {
   console.log("[WASM] myArray: " + myArray.toString());
   console.log("[WASM] newFileValue: " + newFileValue.toString(10));
 
-  // The transformer breaks when any change in AS is done
   console.log("CHANGE THIS STRING TO TRIGGER THE COMPILER");
 
   //

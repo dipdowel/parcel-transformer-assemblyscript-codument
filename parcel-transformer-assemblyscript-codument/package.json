@@ -1,6 +1,6 @@
 {
   "name": "parcel-transformer-assemblyscript-codument",
-  "version": "1.0.0",
+  "version": "0.1.0-alpha",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [
@@ -14,18 +14,26 @@
     "build": "yarn clean && tsc",
     "build-old": "yarn clean && tsc && git add ./dist",
     "start": "echo && echo !!! NOT USED !!! && echo ##yarn clean:dist && ts-node src/index.ts",
-    "go": "yarn build && yarn copy-to-example"
+    "go": "yarn build && yarn copy-to-example",
+    "test": "ts-node node_modules/.bin/tape ./**/*.test.ts | tap-nirvana"
+
   },
   "dependencies": {
     "assemblyscript": "^0.27.5"
   },
   "devDependencies": {
-    "@parcel/config-default": "^2.8.3",
-    "@parcel/core": "^2.8.3",
-    "@parcel/diagnostic": "^2.8.3",
-    "@parcel/plugin": "^2.8.3",
+    "@parcel/config-default": "^2.9.1",
+    "@parcel/core": "^2.9.1",
+    "@parcel/diagnostic": "^2.9.1",
+    "@parcel/plugin": "^2.9.1",
+    "@types/mock-fs": "^4.13.1",
     "@types/node": "^20.1.7",
+    "@types/tape": "^5.6.0",
+    "mock-fs": "^5.2.0",
     "rimraf": "^5.0.0",
+    "tap-nirvana": "^1.1.0",
+    "tape": "^5.6.3",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "wabt": "^1.0.24"
   },
