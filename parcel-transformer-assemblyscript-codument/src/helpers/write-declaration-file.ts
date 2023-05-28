@@ -1,19 +1,9 @@
 import * as fs from "fs";
 import { dbg } from "../dbg";
 import path from "path";
+import { figureOutPaths } from "./figure-out-path";
 
 const PREF = "[ASC][WDF]";
-
-function figureOutPaths(pathToDTS: string): {
-  filename: string;
-  directories: string;
-} {
-  // path.isAbsolute()
-  const filename = path.basename(pathToDTS);
-  const directories: string = path.dirname(pathToDTS);
-
-  return { filename, directories };
-}
 
 /**
  * Write types for the WASM module to the disk.
@@ -22,8 +12,10 @@ function figureOutPaths(pathToDTS: string): {
  * @param pathToDTS
  */
 export function writeDeclarationFile(content: string, pathToDTS: string) {
-  if (!content) {
-    dbg.error(`${PREF} '.d.ts' has no content!`);
+  if (!content || !pathToDTS) {
+    dbg.error(
+      `${PREF} '.d.ts' has no content or the destination path not provided!`
+    );
     return;
   }
 
