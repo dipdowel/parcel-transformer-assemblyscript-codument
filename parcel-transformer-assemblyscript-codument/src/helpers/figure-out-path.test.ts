@@ -2,7 +2,7 @@
 import test from "tape";
 import { figureOutPaths } from "./figure-out-path";
 
-test("figureOutPaths() with relative", (t) => {
+test("figureOutPaths()", (t) => {
   let { filename, directories } = figureOutPaths("./src/my-file.d.ts");
   t.equals(filename, "my-file.d.ts", "filename extracted correctly");
   t.equals(directories, "./src", "directories extracted correctly");
