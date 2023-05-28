@@ -13,26 +13,27 @@ import { loadTransformerConfig } from "./load-transformer-config";
 /*
     TODO:  # GENERAL
     TODO: ======================================================================
-    TODO: - Add a unit-test framework
-    TODO: - Start writing unit tests
+    TODO: - Keep on writing unit tests
     TODO: - Pick up FIXMEs and TODOs from around the code every now and then
     TODO: - Make sure JSDoc is in order, we need a 100% doc coverage!
     TODO: - Consider committing `dist` since it's going to be an NPM package (double check!)
     TODO: - Apply licence as explained in file `LICENSE`
     TODO: - Update and improve all the README files. Onboarding for a developer should have clear steps to follow.
     TODO:
-    TODO: - What happens if there is more than one *.as.ts file? Will it all crash?
-    TODO: - Can we narrow down glob to just `index.as.ts`?
     TODO:
     TODO:  # CONFIGURATION
     TODO: ======================================================================
-    TODO: -
-    TODO: -  explain in the readme that all the file names in asconfig should not be used
-    TODO: - throw out file-related keys from the config read from the user's directory. just keep the source maps, but handle them to be boolean
+    TODO: - Implement a configuration for the destination of the `.d.ts` file (6. Explain where to find the `.d.ts` file for accessing WASM modules in TypeScript)
+    TODO: - Explain in the readme that all the file names in asconfig should not be used
+    TODO: - Throw out file-related keys from the config read from the user's directory. just keep the source maps, but handle them to be boolean
 
     TODO:  # LOGGING / ERROR HANDLING
     TODO: ======================================================================
     TODO: - Improve error reporting as mentioned here: https://github.com/parcel-bundler/parcel/discussions/8964?sort=old#discussioncomment-5952588
+
+
+
+
 
  */
 
