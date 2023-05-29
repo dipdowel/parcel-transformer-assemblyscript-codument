@@ -57,6 +57,10 @@ module.exports = new Transformer({
 
     dbg.setEnabled(config?.enableConsoleLogs);
 
+    dbg.log(
+      `${PREF} Generated types will be written to the following file: ${config?.dtsPath}`
+    );
+
     let compilationArtifacts,
       invalidateOnFileChange,
       invalidateOnFileCreate,
@@ -140,7 +144,8 @@ module.exports = new Transformer({
 
     // A `.d.ts` file with all the signatures of callable function and accessible properties of the WASM module
     writeDeclarationFile(
-      compilationArtifacts?.[ArtifactFileType.D_TS] as string
+      compilationArtifacts?.[ArtifactFileType.D_TS] as string,
+      config?.dtsPath
     );
 
     // Print the MAP compilation artifact

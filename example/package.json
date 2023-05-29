@@ -13,7 +13,7 @@
 		"@parcel/transformer-inline-string": "^2.0.0",
 		"parcel": "^2.9.1",
 		"parcel-packager-wasm": "*",
-		"parcel-transformer-assemblyscript-codument": "*",
+		"parcel-transformer-assemblyscript-codument": "0.1.0-alpha",
 		"rimraf": "^5.0.0"
 	}
 }
