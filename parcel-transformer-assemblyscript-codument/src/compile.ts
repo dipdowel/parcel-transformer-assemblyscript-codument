@@ -8,6 +8,10 @@ import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 import { dbg } from "./dbg";
 
+import * as defaultASConfigFile from "./asconfig.default.json";
+
+const defaultASConfig = JSON.stringify(defaultASConfigFile);
+
 /** Logging prefix */
 const PREF = "[ASC][COMPILE]";
 
@@ -75,7 +79,7 @@ export async function compile(
 
       // We want to watch all the files except the configuration
       !filename.includes(`asconfig.json`) && filesToWatch.push(filePath);
-      return read(inputCode, filename, assemblyDir);
+      return read(filename, assemblyDir, defaultASConfig);
     },
 
     /** @See `write()` in `./compile/io` */

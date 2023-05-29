@@ -2,7 +2,7 @@ import { ArtifactFileType } from "../artifact-file-type";
 import * as fs from "fs";
 import * as path from "path";
 
-import * as defaultASConfig from "../asconfig.default.json";
+// import * as defaultASConfig from "../asconfig.default.json";
 import { verifyConfig } from "./verify-config";
 import { dbg } from "../dbg";
 
@@ -85,15 +85,16 @@ export function write(
  * Modifies the way how ASC reads files from the file system.
  * - NB: Caches user's custom `asconfig.json` on the first read and never re-reads.
  * - Adds some logging for the read operations.
- * @param inputCode
+ // * @param inputCode
  * @param filename
  * @param baseDir
+ * @param defaultASConfig
  * @return
  */
 export function read(
-  inputCode: string,
   filename: string,
-  baseDir: string
+  baseDir: string,
+  defaultASConfig: string
 ): string {
   let filePath = path.join(baseDir, filename);
 
