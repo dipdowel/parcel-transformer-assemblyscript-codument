@@ -104,7 +104,10 @@ module.exports = new Transformer({
       }
     }
 
-    const isNode = asset.env.isNode() || false;
+    // FIXME: add support for NodeJS later on. For now, we only support browsers.
+    // const isNode = asset.env.isNode() || false;
+    const isNode = false;
+
     if (compilationArtifacts) {
       const jsCode = extendJsCode(
         compilationArtifacts[ArtifactFileType.JS] as string,
