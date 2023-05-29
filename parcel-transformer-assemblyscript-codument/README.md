@@ -152,7 +152,7 @@ parcel build index.html
 ```
 
 ## Roadmap
-- [ ] Make source maps work (depends on [a change Parcel](https://github.com/parcel-bundler/parcel/pull/9009))
+- [ ] Make source maps work (depends on [a change in Parcel](https://github.com/parcel-bundler/parcel/pull/9009))
 - [ ] Add support for AssemblyScript NodeJS applications
 
 ## Feedback
