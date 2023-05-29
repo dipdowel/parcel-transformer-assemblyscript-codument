@@ -1,4 +1,5 @@
 {
+  "private": false,
   "name": "parcel-transformer-assemblyscript-codument",
   "version": "0.1.0-alpha",
   "main": "dist/index.js",
@@ -39,6 +40,6 @@
   },
   "engines": {
     "node": ">=12",
-    "parcel": "^2.0.0"
+    "parcel": "^2.9.1"
   }
 }

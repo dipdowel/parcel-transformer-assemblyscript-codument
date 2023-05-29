@@ -6,14 +6,15 @@
 		"clean:dist": "rimraf dist/*",
 		"clean:build": "rimraf build/*",
 		"node:build-not-supported-yet": "parcel build node.js --no-cache",
-		"web:build": "yarn clean:dist && parcel build index.html --no-cache",
-		"web:start": "yarn clean:dist && parcel index.html --no-cache"
+		"web:build": "yarn clean:dist && parcel build index.html",
+		"web:start": "yarn clean:dist && parcel index.html"
 	},
 	"devDependencies": {
-		"@parcel/transformer-inline-string": "^2.0.0",
+		"@parcel/transformer-inline-string": "^2.9.1",
 		"parcel": "^2.9.1",
 		"parcel-packager-wasm": "*",
 		"parcel-transformer-assemblyscript-codument": "0.1.0-alpha",
+		"parcel-config-assemblyscript-codument": "*",
 		"rimraf": "^5.0.0"
 	}
 }
