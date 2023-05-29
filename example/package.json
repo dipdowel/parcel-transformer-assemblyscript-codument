@@ -2,6 +2,7 @@
 	"private": true,
 	"name": "example",
 	"version": "0.0.0",
+	"license": "MIT",
 	"scripts": {
 		"clean:dist": "rimraf dist/*",
 		"clean:build": "rimraf build/*",

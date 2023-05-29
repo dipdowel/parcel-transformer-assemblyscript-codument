@@ -3,6 +3,7 @@
   "name": "parcel-config-assemblyscript-codument",
   "version": "0.1.3",
   "main": "index.json",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
