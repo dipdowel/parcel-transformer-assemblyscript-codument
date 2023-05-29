@@ -1,0 +1,6 @@
+{
+  "transformers": {
+    "index.as.ts": ["parcel-transformer-assemblyscript-codument"],
+    "*.wasm": ["@parcel/transformer-raw"]
+  }
+}

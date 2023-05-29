@@ -1,18 +1,16 @@
 {
-  "name": "parcel-packager-wasm",
+  "name": "parcel-config-assemblyscript-codument",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "index.json",
   "publishConfig": {
     "access": "public"
   },
   "repository": "https://github.com/dipdowel/parcel-transformer-assemblyscript-codument.git",
   "dependencies": {
-    "@parcel/diagnostic": "^2.0.0",
-    "@parcel/plugin": "^2.0.0",
-    "wabt": "^1.0.24"
+    "parcel-transformer-assemblyscript-codument": "0.1.0-alpha"
   },
   "engines": {
     "node": ">=12",
-    "parcel": "^2.0.0"
+    "parcel": "^2.9.1"
   }
 }
