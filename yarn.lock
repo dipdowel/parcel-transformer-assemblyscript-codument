@@ -652,7 +652,7 @@
     posthtml-render "^3.0.0"
     semver "^5.7.1"
 
-"@parcel/transformer-raw@2.9.1":
+"@parcel/transformer-raw@2.9.1", "@parcel/transformer-raw@^2.9.1":
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/@parcel/transformer-raw/-/transformer-raw-2.9.1.tgz#7a329ae7d8eb42d9f424daa209d99edfd302b6fa"
   integrity sha512-Wr0Y9fETiyF5ntL3yhn/ZXjcnswcn1T9YLXa+yAxpAxKW+/D7A1jKVS0tyDOZsdakWA9gzlLP6w1O4Nl8pVmEg==
