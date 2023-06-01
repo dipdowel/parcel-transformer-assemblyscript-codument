@@ -1,15 +1,19 @@
 {
   "private": false,
   "name": "parcel-config-assemblyscript-codument",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "index.json",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/dipdowel/parcel-transformer-assemblyscript-codument.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dipdowel/parcel-transformer-assemblyscript-codument.git",
+    "directory": "parcel-config-assemblyscript-codument"
+  },
   "dependencies": {
-    "parcel-transformer-assemblyscript-codument": "0.1.1-alpha",
+    "parcel-transformer-assemblyscript-codument": "0.1.2-alpha",
     "@parcel/transformer-raw" :"^2.9.1"
   },
   "engines": {
