@@ -162,4 +162,3 @@ If you want to suggest an improvement, please [fork](https://github.com/dipdowel
 ## Contributors
 - Idea and the AssemblyScript-related part of the project: [@dipdopwel](https://github.com/dipdowel)
 - Parcel-related guidance, support and contribution via PRs: [@mischnic](https://github.com/mischnic)
-
