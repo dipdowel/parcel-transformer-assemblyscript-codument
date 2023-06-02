@@ -1,1 +1,2 @@
-export const myNumber: i32 = 123456;
+// const x: i32;
+export const myNumber: i32 = 12345678;
