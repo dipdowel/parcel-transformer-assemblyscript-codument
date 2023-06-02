@@ -13,6 +13,7 @@ const PREF = "[ASC][COMPILE]";
 
 /** Descriptor of the compilation result */
 export type Compiled = {
+  error: Error | undefined;
   invalidateOnFileChange: FilePath[];
   invalidateOnFileCreate: FileCreateInvalidation[];
   invalidateOnEnvChange: string[];
@@ -22,6 +23,8 @@ export type Compiled = {
 // AssemblyScript Compiler suitable for programmatic usage.
 // Keeping it as a global variable allows caching in order to avoid reloading the compiler on every compilation
 let asc: ASC | undefined;
+
+const line = "─".repeat(79);
 
 /**
  * Configures and performs a call to AssemblyScript compiler
@@ -119,17 +122,16 @@ export async function compile(
   // Store the log-friendly string representation of the compilation statistics
   compilationArtifacts.stats = stats?.toString();
 
-  if (error) {
-    // Some formatting for the errors in AssemblyScript code
-    const line = "─".repeat(79);
-    throw new Error(
-      `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`
-    );
-  } else {
+  if (!error) {
     dbg.log(stdout?.toString());
   }
 
   return {
+    error: error
+      ? new Error(
+          `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`
+        )
+      : undefined,
     compilationArtifacts: compilationArtifacts as CompilationArtifacts,
     invalidateOnFileChange: filesToWatch,
     invalidateOnFileCreate: [],

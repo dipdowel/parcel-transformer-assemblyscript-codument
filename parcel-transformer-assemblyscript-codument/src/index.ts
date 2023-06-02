@@ -4,8 +4,7 @@ import SourceMap from "@parcel/source-map";
 import { ArtifactFileType } from "./artifact-file-type";
 import { extendJsCode } from "./helpers/extend-js-code";
 import { writeDeclarationFile } from "./helpers/write-declaration-file";
-import { throwTransformerError } from "./helpers/throw-transformer-error";
-import { defaultError } from "./default-error";
+
 import { compile } from "./compile";
 import { dbg } from "./dbg";
 import { loadTransformerConfig } from "./load-transformer-config";
@@ -61,30 +60,16 @@ module.exports = new Transformer({
       `${PREF} Generated types will be written to the following file: ${config?.dtsPath}`
     );
 
-    let compilationArtifacts,
+    let {
+      error,
+      compilationArtifacts,
       invalidateOnFileChange,
       invalidateOnFileCreate,
-      invalidateOnEnvChange;
-
-    try {
-      let compilationResult = await compile(
-        { filePath: asset.filePath, inputCode: await asset.getCode() },
-        isDev
-      );
-
-      compilationResult &&
-        ({
-          compilationArtifacts,
-          invalidateOnFileChange,
-          invalidateOnFileCreate,
-          invalidateOnEnvChange,
-        } = compilationResult);
-    } catch (e) {
-      throwTransformerError({
-        ...defaultError,
-        message: `\nCould not compile Assembly Script\n${e}`,
-      });
-    }
+      invalidateOnEnvChange,
+    } = await compile(
+      { filePath: asset.filePath, inputCode: await asset.getCode() },
+      isDev
+    );
 
     if (invalidateOnFileChange) {
       for (let file of invalidateOnFileChange) {
@@ -102,6 +87,10 @@ module.exports = new Transformer({
       for (let envvar of invalidateOnEnvChange) {
         asset.invalidateOnEnvChange(envvar);
       }
+    }
+
+    if (error) {
+      throw error;
     }
 
     // FIXME: add support for NodeJS later on. For now, we only support browsers.
