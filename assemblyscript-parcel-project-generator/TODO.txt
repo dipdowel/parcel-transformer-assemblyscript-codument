@@ -1,3 +1,0 @@
-Create a scaffolding tool that would allow you to create a new project with a single command.
- This tool should create a new directory, copy the files from the template directory into the new directory,
-  and then run npm install / yarn to install the dependencies (really? :D )
