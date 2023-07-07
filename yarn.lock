@@ -546,7 +546,7 @@
   dependencies:
     "@parcel/types" "2.9.2"
 
-"@parcel/plugin@^2.9.3":
+"@parcel/plugin@2.9.3", "@parcel/plugin@^2.9.3":
   version "2.9.3"
   resolved "https://registry.yarnpkg.com/@parcel/plugin/-/plugin-2.9.3.tgz#90e9a9482fa27735494372f5643db01abcf3fdb6"
   integrity sha512-qN85Gqr2GMuxX1dT1mnuO9hOcvlEv1lrYrCxn7CJN2nUhbwcfG+LEvcrCzCOJ6XtIHm+ZBV9h9p7FfoPLvpw+g==
@@ -704,12 +704,12 @@
     "@parcel/workers" "2.9.2"
     nullthrows "^1.1.1"
 
-"@parcel/transformer-inline-string@^2.9.2":
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/@parcel/transformer-inline-string/-/transformer-inline-string-2.9.2.tgz#39d46d410dd10ae356fa4cce9b442854b8445ef9"
-  integrity sha512-Wp00m+PqUq0Iq3nJqhphHvHPZ2OeVTQNJQ0hTwUvdO1odkO2KMDtUPsMm0NYIzVkYyvloxpSKfj5kNh/ToVOQA==
+"@parcel/transformer-inline-string@^2.9.3":
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-inline-string/-/transformer-inline-string-2.9.3.tgz#3501b2e5e311347bc377f3409e3813621275c1ef"
+  integrity sha512-IZNd0Ksl32psX1M41KbUc4BmvVSoLVnlpaMrh9C/l+piFSkDXWMnF0PONX/RcxYMBIwB2jYllheIKH54naeNaA==
   dependencies:
-    "@parcel/plugin" "2.9.2"
+    "@parcel/plugin" "2.9.3"
 
 "@parcel/transformer-js@2.9.2":
   version "2.9.2"
