@@ -2102,6 +2102,13 @@ parcel-packager-wasm@*:
   resolved "https://registry.yarnpkg.com/parcel-packager-wasm/-/parcel-packager-wasm-0.0.0.tgz#038ad0291f0aeef72fc0324a11b47c544a6fbd4e"
   integrity sha512-Fbuiab98umGETNEZk8hePwYRTQPpPfExLVIFsiHrB5mINqAXQOz0jkUCWci5AeuQzI1MyTExqA/ciioFWHxlqA==
 
+parcel-transformer-assemblyscript-codument@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/parcel-transformer-assemblyscript-codument/-/parcel-transformer-assemblyscript-codument-0.1.4.tgz#a171c15719b9c128b18e92c9fd4cb5a162db25b9"
+  integrity sha512-Z4gjchRohfM0i2FM7BiiZywnG1+aGbvc5YlzAb8ORrkj6tI1txnowX1tIeyXYJ678yyc6QwDEUYjSqyqUweYNQ==
+  dependencies:
+    assemblyscript "^0.27.5"
+
 parcel@^2.9.3:
   version "2.9.3"
   resolved "https://registry.yarnpkg.com/parcel/-/parcel-2.9.3.tgz#315660ccbaa5a830cf71280ab0cfbd3079247cc5"
