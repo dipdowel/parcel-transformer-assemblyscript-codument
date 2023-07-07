@@ -261,7 +261,7 @@
     nullthrows "^1.1.1"
     semver "^5.7.1"
 
-"@parcel/diagnostic@2.9.2", "@parcel/diagnostic@^2.9.2":
+"@parcel/diagnostic@2.9.2":
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/@parcel/diagnostic/-/diagnostic-2.9.2.tgz#d97cdc1614a6066f04655af5e9cf7c34c93a7476"
   integrity sha512-cHvQ3GtC0dJixtt5Ne1SG0vogt6PE9Fu2KmrFMLcL57rowi3sl+W+Lh02sujd/V0ZQOSRV01WdXJXDsiI/na8g==
@@ -269,7 +269,7 @@
     "@mischnic/json-sourcemap" "^0.1.0"
     nullthrows "^1.1.1"
 
-"@parcel/diagnostic@2.9.3":
+"@parcel/diagnostic@2.9.3", "@parcel/diagnostic@^2.9.3":
   version "2.9.3"
   resolved "https://registry.yarnpkg.com/@parcel/diagnostic/-/diagnostic-2.9.3.tgz#23befe6c3b78440fe1e3635086e637da1529b4db"
   integrity sha512-6jxBdyB3D7gP4iE66ghUGntWt2v64E6EbD4AetZk+hNJpgudOOPsKTovcMi/i7I4V0qD7WXSF4tvkZUoac0jwA==
