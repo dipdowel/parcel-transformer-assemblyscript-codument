@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@parcel/config-default": "^2.9.2",
-    "@parcel/core": "^2.9.2",
+    "@parcel/core": "^2.9.3",
     "@parcel/diagnostic": "^2.9.3",
     "@parcel/plugin": "^2.9.3",
     "@types/mock-fs": "^4.13.1",

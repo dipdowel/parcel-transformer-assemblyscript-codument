@@ -230,7 +230,7 @@
     "@parcel/transformer-react-refresh-wrap" "2.9.2"
     "@parcel/transformer-svg" "2.9.2"
 
-"@parcel/core@2.9.2", "@parcel/core@^2.9.2":
+"@parcel/core@2.9.2":
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/@parcel/core/-/core-2.9.2.tgz#edaf55b1ebbf2c3553cb823acc8b1c73376510be"
   integrity sha512-Qwn9Fp85gchfDq94chr+of9+xgWQP0G48chP+J/PmZ3TP29sOZ9NsVf+qiGO47UAeNnamBRPeMXyK/Nvv0zQdg==
@@ -260,6 +260,37 @@
     msgpackr "^1.5.4"
     nullthrows "^1.1.1"
     semver "^5.7.1"
+
+"@parcel/core@^2.9.3":
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/@parcel/core/-/core-2.9.3.tgz#91346afa57d7b731e7c961451462a51af940acf3"
+  integrity sha512-4KlM1Zr/jpsqWuMXr2zmGsaOUs1zMMFh9vfCNKRZkptf+uk8I3sugHbNdo+F5B+4e2yMuOEb1zgAmvJLeuH6ww==
+  dependencies:
+    "@mischnic/json-sourcemap" "^0.1.0"
+    "@parcel/cache" "2.9.3"
+    "@parcel/diagnostic" "2.9.3"
+    "@parcel/events" "2.9.3"
+    "@parcel/fs" "2.9.3"
+    "@parcel/graph" "2.9.3"
+    "@parcel/hash" "2.9.3"
+    "@parcel/logger" "2.9.3"
+    "@parcel/package-manager" "2.9.3"
+    "@parcel/plugin" "2.9.3"
+    "@parcel/profiler" "2.9.3"
+    "@parcel/source-map" "^2.1.1"
+    "@parcel/types" "2.9.3"
+    "@parcel/utils" "2.9.3"
+    "@parcel/workers" "2.9.3"
+    abortcontroller-polyfill "^1.1.9"
+    base-x "^3.0.8"
+    browserslist "^4.6.6"
+    clone "^2.1.1"
+    dotenv "^7.0.0"
+    dotenv-expand "^5.1.0"
+    json5 "^2.2.0"
+    msgpackr "^1.5.4"
+    nullthrows "^1.1.1"
+    semver "^7.5.2"
 
 "@parcel/diagnostic@2.9.2":
   version "2.9.2"
@@ -323,6 +354,13 @@
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/@parcel/graph/-/graph-2.9.2.tgz#2165ec9bf2503b32045436c186c88929d912c442"
   integrity sha512-2lraupLwe6JTzy4KFOsFphV6/Fn3OF6PUOnHY2oQhHdBzWw43a0cbVpyIn8ChvXKlB3YqdId6X7oOutbmh3X8A==
+  dependencies:
+    nullthrows "^1.1.1"
+
+"@parcel/graph@2.9.3":
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/@parcel/graph/-/graph-2.9.3.tgz#38f6c403ff4a2741390708be510bbf328d311a63"
+  integrity sha512-3LmRJmF8+OprAr6zJT3X2s8WAhLKkrhi6RsFlMWHifGU5ED1PFcJWFbOwJvSjcAhMQJP0fErcFIK1Ludv3Vm3g==
   dependencies:
     nullthrows "^1.1.1"
 
