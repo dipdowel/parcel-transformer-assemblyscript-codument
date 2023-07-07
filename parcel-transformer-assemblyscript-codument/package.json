@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "parcel-transformer-assemblyscript-codument",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [
@@ -26,20 +26,20 @@
     "assemblyscript": "^0.27.5"
   },
   "devDependencies": {
-    "@parcel/config-default": "^2.9.2",
-    "@parcel/core": "^2.9.2",
-    "@parcel/diagnostic": "^2.9.2",
-    "@parcel/plugin": "^2.9.2",
+    "@parcel/config-default": "^2.9.3",
+    "@parcel/core": "^2.9.3",
+    "@parcel/diagnostic": "^2.9.3",
+    "@parcel/plugin": "^2.9.3",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^20.1.7",
     "mock-fs": "^5.2.0",
-    "rimraf": "^5.0.0",
+    "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "wabt": "^1.0.24"
   },
   "engines": {
     "node": ">=12",
-    "parcel": "^2.9.2"
+    "parcel": "^2.9.3"
   }
 }
