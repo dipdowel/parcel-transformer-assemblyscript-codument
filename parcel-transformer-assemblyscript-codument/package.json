@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "parcel-transformer-assemblyscript-codument",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [
@@ -27,7 +27,7 @@
     "assemblyscript": "^0.27.5"
   },
   "devDependencies": {
-    "@parcel/config-default": "^2.9.2",
+    "@parcel/config-default": "^2.9.3",
     "@parcel/core": "^2.9.3",
     "@parcel/diagnostic": "^2.9.3",
     "@parcel/plugin": "^2.9.3",
@@ -44,6 +44,6 @@
   },
   "engines": {
     "node": ">=12",
-    "parcel": "^2.9.2"
+    "parcel": "^2.9.3"
   }
 }

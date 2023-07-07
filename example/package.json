@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.9.3",
-    "parcel": "^2.9.2",
+    "parcel": "^2.9.3",
     "parcel-packager-wasm": "*",
     "parcel-transformer-assemblyscript-codument": "0.1.4",
     "parcel-config-assemblyscript-codument": "*",
