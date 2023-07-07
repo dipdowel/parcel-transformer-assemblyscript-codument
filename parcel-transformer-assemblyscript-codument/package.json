@@ -30,7 +30,7 @@
     "@parcel/config-default": "^2.9.2",
     "@parcel/core": "^2.9.2",
     "@parcel/diagnostic": "^2.9.2",
-    "@parcel/plugin": "^2.9.2",
+    "@parcel/plugin": "^2.9.3",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^20.1.7",
     "@types/tape": "^5.6.0",
