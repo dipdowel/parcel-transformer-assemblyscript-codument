@@ -11,7 +11,7 @@
     "web:start": "yarn clean:dist && parcel index.html"
   },
   "devDependencies": {
-    "@parcel/transformer-inline-string": "^2.9.2",
+    "@parcel/transformer-inline-string": "^2.9.3",
     "parcel": "^2.9.2",
     "parcel-packager-wasm": "*",
     "parcel-transformer-assemblyscript-codument": "0.1.4",
