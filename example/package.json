@@ -16,6 +16,6 @@
     "parcel-packager-wasm": "*",
     "parcel-transformer-assemblyscript-codument": "0.1.4",
     "parcel-config-assemblyscript-codument": "*",
-    "rimraf": "^5.0.0"
+    "rimraf": "^5.0.1"
   }
 }
