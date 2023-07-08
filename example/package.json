@@ -17,5 +17,8 @@
     "parcel-transformer-assemblyscript-codument": "0.1.4",
     "parcel-config-assemblyscript-codument": "*",
     "rimraf": "^5.0.1"
+  },
+  "resolutions": {
+    "semver": "^7.5.4"
   }
 }
