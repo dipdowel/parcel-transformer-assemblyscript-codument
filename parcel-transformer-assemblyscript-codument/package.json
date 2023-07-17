@@ -31,7 +31,7 @@
     "@parcel/diagnostic": "^2.9.3",
     "@parcel/plugin": "^2.9.3",
     "@types/mock-fs": "^4.13.1",
-    "@types/node": "^20.1.7",
+    "@types/node": "^20.4.2",
     "mock-fs": "^5.2.0",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
