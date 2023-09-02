@@ -177,10 +177,39 @@ by your browser.
 parcel build index.html
 ```
 
+### Debug code preprocessing
+
+You can use `//#dbg-start` and `//#dbg-end` to wrap code that should be removed from the release build.
+
+```typescript
+import {somethingUseful} from "./something-useful";
+
+//#dbg-start
+// This import won't even happen on `yarn build`, it only happens on `yarn start`!
+import {debugOnlyHelper} from "./debug-only-helper";
+
+//#dbg-end
+
+export function main(): void {
+
+    console.log("[WASM] Hi there!");
+
+    //#dbg-start
+    //--------------------------------------------------------------------------
+    // This code will be removed from the production build.
+    // Because it's enclosed between the opening and closing debug comments.
+    debugOnlyHelper();
+    console.log(">>> This text will not be printed in a production build.");
+    console.log(">>> It will be completely removed by the preporcessor.");
+    //--------------------------------------------------------------------------
+    //#dbg-end
+}
+
+```
+
 ## Roadmap
 
 - [ ] Make source maps work (depends on [a change in Parcel](https://github.com/parcel-bundler/parcel/pull/9009))
-- [ ] Add support for AssemblyScript NodeJS applications
 
 ## Feedback
 

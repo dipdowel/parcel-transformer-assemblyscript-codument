@@ -7,6 +7,7 @@ import { APIResult, ASC, loadCompiler } from "./compile/load-compiler";
 import { read, write } from "./compile/io";
 import { CompilationArtifacts } from "./helpers/compilation-artifacts";
 import { dbg } from "./dbg";
+import { preprocessDebugStatements } from "./compile/preprocess-debug-statements";
 
 /** Logging prefix */
 const PREF = "[ASC][COMPILE]";
@@ -33,7 +34,7 @@ const line = "─".repeat(79);
  */
 export async function compile(
   asset: { filePath: FilePath; inputCode: string },
-  isDev: boolean
+  isDev: boolean,
 ): Promise<Compiled> {
   // logger.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
 
@@ -78,14 +79,21 @@ export async function compile(
 
       // We want to watch all the files except the configuration
       !filename.includes(`asconfig.json`) && filesToWatch.push(filePath);
-      return read(inputCode, filename, assemblyDir);
+
+      const fileContent = read(inputCode, filename, assemblyDir);
+      // If it's a development build, just return the code as it is
+      if (isDev) {
+        return fileContent;
+      }
+      // If it's a release/production build, call the preprocessor that removes all the code marked as debug.
+      return preprocessDebugStatements(fileContent);
     },
 
     /** @See `write()` in `./compile/io` */
     writeFile: (
       filename: string,
       contents: string | Buffer | Uint8Array,
-      baseDir: string
+      baseDir: string,
     ) => {
       // Handle the case of `"sourceMap": false,` and similar in `asconfig.json`
       if (!filename || filename.trim().toLowerCase() === "false") {
@@ -96,7 +104,7 @@ export async function compile(
         compilationArtifacts as CompilationArtifacts,
         filename,
         contents,
-        baseDir
+        baseDir,
       );
     },
 
@@ -129,7 +137,7 @@ export async function compile(
   return {
     error: error
       ? new Error(
-          `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`
+          `\n${line}\nAssemblyScript Compiler\n${line}\n${error}\n\n${stderr?.toString()}${line}\n`,
         )
       : undefined,
     compilationArtifacts: compilationArtifacts as CompilationArtifacts,

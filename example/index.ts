@@ -8,7 +8,7 @@ import { WasmModule } from "./wasm-module";
     const wasm: WasmModule = await initWasm();
 
     console.log(
-      `wasm memory size: ${wasm.memory.buffer.byteLength / 1024} KiB`
+      `wasm memory size: ${wasm.memory.buffer.byteLength / 1024} KiB`,
     );
 
     const addResult = wasm.add(4, 6);
