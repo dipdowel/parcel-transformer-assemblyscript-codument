@@ -10,20 +10,26 @@
     "resolveJsonModule": true,
     "moduleResolution": "NodeNext",
     "sourceMap": true,
-
     "rootDir": "src",
     "isolatedModules": true,
-
-    "types": [/*"jest",*/ "node"],
+    "types": [
+      /*"jest",*/
+      "node"
+    ],
     "composite": false,
-
     "target": "es2021",
-    "module": "commonjs",
+    "module": "NodeNext",
     "declaration": false,
     "outDir": "./dist",
     "strict": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules"],
-  "types": ["node"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "types": [
+    "node"
+  ]
 }

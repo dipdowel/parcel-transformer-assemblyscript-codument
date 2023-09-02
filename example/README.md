@@ -1,6 +1,10 @@
-# `example`
+In order to run the example:
 
-## Preface
-At this stage of development use `yarn build:web |cat` to see the complete logs and stats!
+```bash
+cd ../parcel-transformer-assemblyscript-codument
+yarn go
+cd ../example
+yarn web:start
+```
 
-## TODO: Cover the following:
+If something goes wrong, and you need to see more logging, try `yarn build:web |cat` instead of just `yarn web:start`
