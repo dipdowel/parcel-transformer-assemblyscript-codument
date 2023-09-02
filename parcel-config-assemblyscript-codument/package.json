@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "parcel-config-assemblyscript-codument",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "main": "index.json",
   "license": "MIT",
   "publishConfig": {
@@ -13,7 +13,7 @@
     "directory": "parcel-config-assemblyscript-codument"
   },
   "dependencies": {
-    "parcel-transformer-assemblyscript-codument": "0.1.5",
+    "parcel-transformer-assemblyscript-codument": "0.1.6",
     "@parcel/transformer-raw": "^2.9.3"
   },
   "engines": {

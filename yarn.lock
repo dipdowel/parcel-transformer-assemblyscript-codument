@@ -966,7 +966,7 @@ argparse@^2.0.1:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-assemblyscript@^0.27.9:
+assemblyscript@^0.27.5, assemblyscript@^0.27.9:
   version "0.27.9"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.9.tgz#f520ccb4ea2b9c83262fcd20d0573b3677ba19cb"
   integrity sha512-cFE/AMjVtBQ2iKFZPu/a3Z/KJzGex61C+X+y3GuLJ8Hr9Zdf46sy/JlIl6ikothQd2umM9CQDAD/uAPAEHL+oA==
@@ -1586,6 +1586,13 @@ parcel-packager-wasm@*:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/parcel-packager-wasm/-/parcel-packager-wasm-0.0.0.tgz#038ad0291f0aeef72fc0324a11b47c544a6fbd4e"
   integrity sha512-Fbuiab98umGETNEZk8hePwYRTQPpPfExLVIFsiHrB5mINqAXQOz0jkUCWci5AeuQzI1MyTExqA/ciioFWHxlqA==
+
+parcel-transformer-assemblyscript-codument@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/parcel-transformer-assemblyscript-codument/-/parcel-transformer-assemblyscript-codument-0.1.5.tgz#89b2c94e4af59dbe862a07958894de3b1d9fc09d"
+  integrity sha512-iGklU0J6/5uSR0Gl84QCzOP3cC8/MbugNjToiRqMyaz3erpAHhEKVPeAvT8NEqQraRUq8MDe5Re8eNk8jEU14A==
+  dependencies:
+    assemblyscript "^0.27.5"
 
 parcel@^2.9.3:
   version "2.9.3"
