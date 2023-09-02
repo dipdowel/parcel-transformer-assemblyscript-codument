@@ -36,13 +36,15 @@
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
-    "wabt": "^1.0.24"
+    "wabt": "^1.0.24",
+    "cosmiconfig": "7.1.0"
   },
   "engines": {
     "node": ">=12",
     "parcel": "^2.9.3"
   },
   "resolutions": {
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "cosmiconfig": "7.1.0"
   }
 }
