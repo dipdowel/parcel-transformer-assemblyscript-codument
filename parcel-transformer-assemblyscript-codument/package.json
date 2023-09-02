@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "parcel-transformer-assemblyscript-codument",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [
@@ -45,6 +45,9 @@
   },
   "resolutions": {
     "semver": "^7.5.4",
+    "cosmiconfig": "7.1.0"
+  },
+  "overrides": {
     "cosmiconfig": "7.1.0"
   }
 }
