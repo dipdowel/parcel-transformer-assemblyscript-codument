@@ -961,10 +961,10 @@ argparse@^2.0.1:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-assemblyscript@^0.27.5:
-  version "0.27.5"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.5.tgz#23aad32f3c552d672da29fd63aeb1d39395d0d83"
-  integrity sha512-8CPn+SPMrvvDEa6CQylYOd+Vu5ubyrVhWw1Iy9EXyTan7+8jB5R5trspf3jsMUrh3urVRA0YR9c3U84biny1QA==
+assemblyscript@^0.27.5, assemblyscript@^0.27.9:
+  version "0.27.9"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.9.tgz#f520ccb4ea2b9c83262fcd20d0573b3677ba19cb"
+  integrity sha512-cFE/AMjVtBQ2iKFZPu/a3Z/KJzGex61C+X+y3GuLJ8Hr9Zdf46sy/JlIl6ikothQd2umM9CQDAD/uAPAEHL+oA==
   dependencies:
     binaryen "112.0.0-nightly.20230411"
     long "^5.2.1"
@@ -1765,6 +1765,7 @@ stable@^0.1.8:
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1783,6 +1784,7 @@ string-width@^5.0.1, string-width@^5.1.2:
     strip-ansi "^7.0.1"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  name strip-ansi-cjs
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
