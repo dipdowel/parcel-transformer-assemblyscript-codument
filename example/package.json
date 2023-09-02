@@ -7,8 +7,8 @@
     "clean:dist": "rimraf dist/*",
     "clean:build": "rimraf build/*",
     "node:build-not-supported-yet": "parcel build node.js --no-cache",
-    "web:build": "yarn clean:dist && parcel build index.html",
-    "web:start": "yarn clean:dist && parcel index.html"
+    "build": "yarn clean:dist && parcel build index.html",
+    "start": "yarn clean:dist && parcel index.html"
   },
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.9.3",
