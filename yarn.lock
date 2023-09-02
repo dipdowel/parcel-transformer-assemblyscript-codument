@@ -1582,13 +1582,6 @@ parcel-packager-wasm@*:
   resolved "https://registry.yarnpkg.com/parcel-packager-wasm/-/parcel-packager-wasm-0.0.0.tgz#038ad0291f0aeef72fc0324a11b47c544a6fbd4e"
   integrity sha512-Fbuiab98umGETNEZk8hePwYRTQPpPfExLVIFsiHrB5mINqAXQOz0jkUCWci5AeuQzI1MyTExqA/ciioFWHxlqA==
 
-parcel-transformer-assemblyscript-codument@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/parcel-transformer-assemblyscript-codument/-/parcel-transformer-assemblyscript-codument-0.1.4.tgz#a171c15719b9c128b18e92c9fd4cb5a162db25b9"
-  integrity sha512-Z4gjchRohfM0i2FM7BiiZywnG1+aGbvc5YlzAb8ORrkj6tI1txnowX1tIeyXYJ678yyc6QwDEUYjSqyqUweYNQ==
-  dependencies:
-    assemblyscript "^0.27.5"
-
 parcel@^2.9.3:
   version "2.9.3"
   resolved "https://registry.yarnpkg.com/parcel/-/parcel-2.9.3.tgz#315660ccbaa5a830cf71280ab0cfbd3079247cc5"
@@ -1765,6 +1758,7 @@ stable@^0.1.8:
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1783,6 +1777,7 @@ string-width@^5.0.1, string-width@^5.1.2:
     strip-ansi "^7.0.1"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  name strip-ansi-cjs
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
