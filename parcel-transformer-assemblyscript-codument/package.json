@@ -37,7 +37,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "wabt": "^1.0.24",
-    "cosmiconfig": "7.1.0"
+    "cosmiconfig": "8.3.5"
   },
   "engines": {
     "node": ">=12",
@@ -45,9 +45,9 @@
   },
   "resolutions": {
     "semver": "^7.5.4",
-    "cosmiconfig": "7.1.0"
+    "cosmiconfig": "8.3.5"
   },
   "overrides": {
-    "cosmiconfig": "7.1.0"
+    "cosmiconfig": "8.3.5"
   }
 }
