@@ -117,7 +117,6 @@ By default, the TypeScript definitions are saved in `./src/wasm-module.d.ts`
 - `dropDebugStatements.production` -- Whether to remove debug statements from the production build: `"on" | "off"`
 
 For more details on `dropDebugStatements.*` please see **Debug code preprocessing** in this README.
-
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 ### File `asconfig.json`
@@ -225,8 +224,14 @@ export function main(): void {
     //--------------------------------------------------------------------------
     //#dbg-end
 }
-
 ```
+
+### Troubleshooting the debug code preprocessing
+
+If you changed `dropDebugStatements.development` or `dropDebugStatements.production` in `as-codument-config.json`
+but the changes don't seem to have any effect, please delete directories `.parcel-cache` and `dist` in your root project
+directory and rebuild your project. That should solve the issue, given that your configuration
+file `as-codument-config.json` is valid.
 
 ## Roadmap
 
