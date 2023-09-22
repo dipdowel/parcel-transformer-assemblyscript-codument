@@ -8,13 +8,14 @@
     "clean:build": "rimraf build/*",
     "node:build-not-supported-yet": "parcel build node.js --no-cache",
     "build": "yarn clean:dist && parcel build index.html",
-    "start": "yarn clean:dist && parcel index.html"
+    "start": "yarn clean:dist && parcel index.html",
+    "serve": "cd dist && python3 -m http.server 1234"
   },
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.9.3",
     "parcel": "^2.9.3",
     "parcel-packager-wasm": "*",
-    "parcel-transformer-assemblyscript-codument": "0.1.5",
+    "parcel-transformer-assemblyscript-codument": "0.3.0",
     "parcel-config-assemblyscript-codument": "*",
     "rimraf": "^5.0.1"
   },

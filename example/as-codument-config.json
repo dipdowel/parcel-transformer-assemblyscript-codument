@@ -1,5 +1,9 @@
 {
   "consoleLogs": "on",
   "displayStats": "on",
-  ".d.ts_path": "./src/wasm-module.d.ts"
+  ".d.ts_path": "./src/wasm-module.d.ts",
+  "dropDebugStatements": {
+    "development": "off",
+    "production": "on"
+  }
 }

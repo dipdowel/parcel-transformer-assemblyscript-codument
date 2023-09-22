@@ -57,8 +57,13 @@ module.exports = new Transformer({
     dbg.setEnabled(config?.enableConsoleLogs);
 
     dbg.log(
-      `${PREF} Generated types will be written to the following file: ${config?.dtsPath}`
+      `${PREF} Generated types will be written to the following file: ${config?.dtsPath}`,
     );
+
+    // Figure out whether we need to remove debug statements from the code, taking into account the build mode
+    let dropDebugStatements = isDev
+      ? config.dropDebugStatements.development
+      : config.dropDebugStatements.production;
 
     let {
       error,
@@ -68,7 +73,8 @@ module.exports = new Transformer({
       invalidateOnEnvChange,
     } = await compile(
       { filePath: asset.filePath, inputCode: await asset.getCode() },
-      isDev
+      isDev,
+      dropDebugStatements,
     );
 
     if (invalidateOnFileChange) {
@@ -100,7 +106,7 @@ module.exports = new Transformer({
     if (compilationArtifacts) {
       const jsCode = extendJsCode(
         compilationArtifacts[ArtifactFileType.JS] as string,
-        isNode
+        isNode,
       );
       asset.type = "js";
       asset.setCode(jsCode);
@@ -109,9 +115,9 @@ module.exports = new Transformer({
     asset.setMap(new SourceMap(options.projectRoot));
 
     dbg.log(
-      `${PREF} Compiled WASM module size: ${
-        compilationArtifacts?.[ArtifactFileType.WASM]?.length
-      }`
+      `${PREF} Compiled WASM module size: ${compilationArtifacts?.[
+        ArtifactFileType.WASM
+      ]?.length}`,
     );
 
     //NB: this is the preferred way of logging things via Parcel
@@ -137,7 +143,7 @@ module.exports = new Transformer({
     // A `.d.ts` file with all the signatures of callable function and accessible properties of the WASM module
     writeDeclarationFile(
       compilationArtifacts?.[ArtifactFileType.D_TS] as string,
-      config?.dtsPath
+      config?.dtsPath,
     );
 
     // Print the MAP compilation artifact

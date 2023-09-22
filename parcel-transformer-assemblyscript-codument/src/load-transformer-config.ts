@@ -11,6 +11,14 @@ export type ASCConfigFile = {
   consoleLogs: OnOff;
   /** Enable or disable printing of  the compilation statistics to the terminal. */
   displayStats: OnOff;
+
+  /** Ignore the code marked as debug during compilation */
+  dropDebugStatements: {
+    /** in development mode */
+    development: OnOff;
+    /** in production mode */
+    production: OnOff;
+  };
   /***/
   /** Path to a file where we shall write TS-types generated during the compilation. */
   [".d.ts_path"]: string;
@@ -28,7 +36,7 @@ function throwConfigError(): void {
       message: `Invalid 'as-codument-config.json'. The expected shape is:\n${JSON.stringify(
         configShape,
         null,
-        4
+        4,
       )} `,
       origin: "parcel-transformer-assemblyscript-codument",
     },
@@ -39,27 +47,32 @@ function throwConfigError(): void {
  * Configuration for Describes the expected format of the user's configuration file for the transformer.
  */
 export type ASCTransformerConfig = {
-  /** FIXME: Path to the ???  */
   filePath?: string | null;
-
   /** Display the compilation statistics in the terminal on every recompilation */
   displayStats: boolean;
   /** Switch all the console outputs on or off. */
   enableConsoleLogs: boolean;
   /** Path to a file where we shall write TS-types generated during the compilation. */
   dtsPath: string;
+  /** Ignore the code marked as debug during compilation */
+  dropDebugStatements: {
+    /** in development mode */
+    development: boolean;
+    /** in production mode */
+    production: boolean;
+  };
 };
 
 const DEFAULT_D_TS_PATH = "./wasm-module.d.ts";
 
 export async function loadTransformerConfig(
-  config: Config
+  config: Config,
 ): Promise<ASCTransformerConfig> {
   let conf = await config.getConfig<ASCConfigFile>(
     ["as-codument-config.json"],
     {
       packageKey: "assemblyscript-transformer-codument",
-    }
+    },
   );
 
   config.invalidateOnStartup();
@@ -68,6 +81,8 @@ export async function loadTransformerConfig(
   let displayStats = false;
   let enableConsoleLogs = false;
   let dtsPath: string = DEFAULT_D_TS_PATH;
+  let dropDebugInDev = false;
+  let dropDebugInProd = true;
 
   if (conf) {
     if (!conf?.contents?.consoleLogs || !conf?.contents?.displayStats) {
@@ -76,6 +91,9 @@ export async function loadTransformerConfig(
     enableConsoleLogs = conf?.contents?.consoleLogs === "on";
     displayStats = conf?.contents?.displayStats === "on";
     dtsPath = conf?.contents?.[".d.ts_path"] || DEFAULT_D_TS_PATH;
+
+    dropDebugInDev = conf?.contents.dropDebugStatements?.development === "on";
+    dropDebugInProd = conf?.contents.dropDebugStatements?.production === "on";
   }
 
   return {
@@ -83,5 +101,9 @@ export async function loadTransformerConfig(
     displayStats,
     enableConsoleLogs,
     dtsPath: dtsPath as string,
+    dropDebugStatements: {
+      development: dropDebugInDev,
+      production: dropDebugInProd,
+    },
   };
 }
