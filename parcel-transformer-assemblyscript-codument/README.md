@@ -102,13 +102,22 @@ By default, the TypeScript definitions are saved in `./src/wasm-module.d.ts`
 {
   "consoleLogs": "off",
   "displayStats": "on",
-  ".d.ts_path": "./src/wasm-module.d.ts"
+  ".d.ts_path": "./src/wasm-module.d.ts",
+  "dropDebugStatements": {
+    "development": "off",
+    "production": "on"
+  }
 }
 ```
 
-`consoleLogs` -- Whether to log transformer debug information to your terminal: `"on" | "off"`
-`displayStats` -- Whether to display statistics of AssemblyScript compilation: `"on" | "off"`
-`d.ts_path` -- Path to the TypeScript definition file with types for your WASM-functions.
+- `consoleLogs` -- Whether to log transformer debug information to your terminal: `"on" | "off"`
+- `displayStats` -- Whether to display statistics of AssemblyScript compilation: `"on" | "off"`
+- `d.ts_path` -- Path to the TypeScript definition file with types for your WASM-functions.
+- `dropDebugStatements.development` -- Whether to remove debug statements from the development build: `"on" | "off"`
+- `dropDebugStatements.production` -- Whether to remove debug statements from the production build: `"on" | "off"`
+
+For more details on `dropDebugStatements.*` please see **Debug code preprocessing** in this README.
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 ### File `asconfig.json`
@@ -179,13 +188,25 @@ parcel build index.html
 
 ### Debug code preprocessing
 
-You can use `//#dbg-start` and `//#dbg-end` to wrap code that should be removed from the release build.
+You can use `//#dbg-start` and `//#dbg-end` to wrap code that should be ignored during the build, if configured so.
+
+**Use cases:**
+
+1. When you have complex `.toString()` methods in your AssemblyScript code that you want to use for
+   debugging but don't want to include them to your production build.
+2. When you want to use some helper functions in your AssemblyScript code for debugging purposes but don't want
+   to include them to your production build.
+3. When you want to ignore `import` statements in your AssemblyScript code that are used for debugging purposes (e.g.
+   for importing functions mentioned in point 2 above).
+4. When you want all the `console.log()` and similar calls not to be compiled into your build.
+
+Here's a minimal example:
 
 ```typescript
 import {somethingUseful} from "./something-useful";
 
 //#dbg-start
-// This import won't even happen on `yarn build`, it only happens on `yarn start`!
+// With default configuration this import won't happen on `yarn build`, it only happens on `yarn start`!
 import {debugOnlyHelper} from "./debug-only-helper";
 
 //#dbg-end
@@ -196,8 +217,8 @@ export function main(): void {
 
     //#dbg-start
     //--------------------------------------------------------------------------
-    // This code will be removed from the production build.
-    // Because it's enclosed between the opening and closing debug comments.
+    // This code will not be compiled into your production build
+    // because it is enclosed between the opening and closing debug comments.
     debugOnlyHelper();
     console.log(">>> This text will not be printed in a production build.");
     console.log(">>> It will be completely removed by the preporcessor.");

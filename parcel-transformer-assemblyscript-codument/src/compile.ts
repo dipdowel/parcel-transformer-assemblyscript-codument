@@ -31,10 +31,12 @@ const line = "─".repeat(79);
  * Configures and performs a call to AssemblyScript compiler
  * @param asset
  * @param isDev
+ * @param dropDebugStatements -- whether to ignore debug statements in the code during compilation
  */
 export async function compile(
   asset: { filePath: FilePath; inputCode: string },
   isDev: boolean,
+  dropDebugStatements: boolean,
 ): Promise<Compiled> {
   // logger.log(`>>>>>>> Is ASC from cache? ${!!asc}`);
 
@@ -81,12 +83,13 @@ export async function compile(
       !filename.includes(`asconfig.json`) && filesToWatch.push(filePath);
 
       const fileContent = read(inputCode, filename, assemblyDir);
-      // If it's a development build, just return the code as it is
-      if (isDev) {
-        return fileContent;
+
+      if (dropDebugStatements) {
+        // if configured so, call the preprocessor that removes all the code marked as debug
+        return preprocessDebugStatements(fileContent);
       }
-      // If it's a release/production build, call the preprocessor that removes all the code marked as debug.
-      return preprocessDebugStatements(fileContent);
+      // Otherwise just return the code as it is
+      return fileContent;
     },
 
     /** @See `write()` in `./compile/io` */
