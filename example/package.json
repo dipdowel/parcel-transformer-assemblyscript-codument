@@ -12,10 +12,10 @@
     "serve": "cd dist && python3 -m http.server 1234"
   },
   "devDependencies": {
-    "@parcel/transformer-inline-string": "^2.9.3",
-    "parcel": "^2.9.3",
+    "@parcel/transformer-inline-string": "2.10.3",
+    "parcel": "2.10.3",
     "parcel-packager-wasm": "*",
-    "parcel-transformer-assemblyscript-codument": "0.3.0",
+    "parcel-transformer-assemblyscript-codument": "0.4.0",
     "parcel-config-assemblyscript-codument": "*",
     "rimraf": "^5.0.1"
   },
