@@ -1,3 +1,5 @@
+> **⚠️ This project has been archived and is no longer actively maintained.**
+
 ## `parcel-transformer-assemblyscript-codument` + `example`
 
 ### Contents
